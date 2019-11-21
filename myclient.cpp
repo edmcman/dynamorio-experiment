@@ -13,8 +13,6 @@ struct HexTo {
     }
 };
 
-#define BUFSIZE 1000
-
 static droption_t<std::string> hit_addr_opt
 (DROPTION_SCOPE_CLIENT, "hit_addr", "", "Hit address",
  "Do not instrument anything until this address is hit.");
@@ -27,11 +25,6 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating);
 
-static void hitit () {
-  dr_printf ("We hit the hit address %#Lx!\n", hit_addr);
-  hit = true;
-}
-
 DR_EXPORT void
 dr_client_main(client_id_t id, int argc, const char *argv[])
 {
@@ -43,11 +36,8 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
     dr_abort();
   }
 
-  //hit_addr = boost::lexical_cast<uintptr_t>("0xdeadbeef"); 
   hit_addr = boost::lexical_cast<HexTo<uintptr_t>> (hit_addr_opt.get_value ());
 
-  //dr_fprintf (STDERR, "Hit address: %s\n", hit_addr.get_value ().c_str ());
-  
   /* register events */
   dr_register_bb_event (event_basic_block);
 }
@@ -66,16 +56,9 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating)
 {
-  static char buf[BUFSIZE];
-
   for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
     if (instr_get_app_pc (instr) == (void*) hit_addr) {
-      // XXX: Can we do this without a call?
-      // instr_t* new_insn = XINST_CREATE_store_1byte (drcontext,
-      //                                          opnd_create_abs_addr ((void*) &hit,
-      //                                                                OPSZ_PTR),
-      //                                          OPND_CREATE_INT8 (1));
       instrlist_meta_postinsert (bb,
                                  instr,
                                  XINST_CREATE_store_1byte (drcontext,
@@ -83,15 +66,7 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                                                                                  OPSZ_1),
                                                            OPND_CREATE_INT8 (1)));
       break;
-      //dr_insert_clean_call (drcontext, bb, instr, (void*) hitit, false, 0);
     }
-
-    // instr_disassemble_to_buffer (drcontext,
-    //                              instr,
-    //                              buf,
-    //                              BUFSIZE);
-    //std::cout << instr_get_app_pc (instr) << std::endl;
-    //dr_printf ("Building %s %#Lx\n", buf, instr_get_app_pc (instr));
 
   }
 
