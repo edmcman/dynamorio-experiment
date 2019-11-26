@@ -1,7 +1,10 @@
 #include "dr_api.h"
 #include "droption.h"
+#include "options.hpp"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+
+void start_server ();
 
 template <typename ElemT>
 struct HexTo {
@@ -17,7 +20,7 @@ static droption_t<twostring_t> fastforward_opt
 (DROPTION_SCOPE_CLIENT, "fastforward", std::make_pair ("", ""), "Fastforward",
  "Do not instrument anything until this (address, tuple) is reached.");
 
-std::pair <uintptr_t, size_t> fastforward_params = {0, 0};
+//std::pair <uintptr_t, size_t> fastforward_params = {0, 0};
 
 static bool fastforwarding = false;
 
@@ -28,6 +31,43 @@ typedef struct _per_thread_t {
      */
     byte shadow_gprs[DR_NUM_GPR_REGS];
 } per_thread_t;
+
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+static void worker_thread (void* param) {
+  //void** drcontexts;
+
+  dr_printf("Worker thread\n");
+  uint num_unsuspended;
+  suspend_params = std::make_pair ((void**) 0, 0U);
+  DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
+
+  dr_printf ("Spawning server.\n");
+  struct addrinfo hints, *res;
+  int errcode;
+  char addrstr[100];
+  void *ptr;
+
+  memset (&hints, 0, sizeof (hints));
+  hints.ai_family = PF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags |= AI_CANONNAME;
+
+//isspace ('a');
+//errcode = getaddrinfo ("google.com", NULL, &hints, &res);
+  start_server ();
+  dr_printf ("Done spawning server.\n");
+
+  while (true) {
+    dr_printf("Worker thread is sleeping\n");
+    dr_sleep (5000);
+    // assert (dr_resume_all_other_threads (drcontexts, num_suspended));
+    // dr_sleep (50);
+  }
+};
 
 static void
 event_thread_init (void *drcontext) {
@@ -49,18 +89,23 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
 DR_EXPORT void
 dr_client_main(client_id_t id, int argc, const char *argv[])
 {
+
   std::string parse_err;
   int last_index;
   if (!droption_parser_t::parse_argv(DROPTION_SCOPE_CLIENT, argc, argv, &parse_err, &last_index)) {
     dr_fprintf(STDERR, "Usage error: %s\n", parse_err.c_str());
+    dr_fprintf(STDERR, "%s\n", droption_parser_t::usage_short (DROPTION_SCOPE_CLIENT).c_str ());
+    dr_abort ();
     dr_fprintf(STDERR, "%s\n", droption_parser_t::usage_long (DROPTION_SCOPE_CLIENT).c_str ());
     dr_abort();
   }
 
-  uintptr_t fastforward_addr = boost::lexical_cast<HexTo<uintptr_t>> (fastforward_opt.get_value ().first);
-  size_t fastforward_count = boost::lexical_cast<size_t> (fastforward_opt.get_value ().second);
-  fastforward_params = std::make_pair (fastforward_addr, fastforward_count);
-  fastforwarding = true;
+  dr_create_client_thread (worker_thread, NULL);
+
+  // uintptr_t fastforward_addr = boost::lexical_cast<HexTo<uintptr_t>> (fastforward_opt.get_value ().first);
+  // size_t fastforward_count = boost::lexical_cast<size_t> (fastforward_opt.get_value ().second);
+  // fastforward_params = std::make_pair (fastforward_addr, fastforward_count);
+  // fastforwarding = true;
 
   /* register events */
   dr_register_bb_event (event_basic_block);
@@ -77,7 +122,7 @@ static void clean_call (void* addr) {
 }
 
 static void update_fastforward_count (void) {
-  if (--fastforward_params.second == 0) {
+  if (--fastforward_params->second == 0) {
     fastforwarding = false;
     dr_printf ("Done fast forwarding!\n");
   }
@@ -87,10 +132,10 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating)
 {
-  if (fastforwarding) {
+  if (fastforward_params) {
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
-      if (instr_get_app_pc (instr) == (void*) fastforward_params.first) {
+      if (instr_get_app_pc (instr) == (void*) fastforward_params->first) {
         dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 0);
         break;
       }
