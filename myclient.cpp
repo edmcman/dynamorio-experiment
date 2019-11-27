@@ -37,29 +37,30 @@ typedef struct _per_thread_t {
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+extern "C" {
+  void __ctype_init (void);
+}
+
+static void server_thread (void* param) {
+  dr_printf ("Server thread\n");
+
+  uint num_unsuspended;
+  suspend_params = std::make_pair ((void**) 0, 0U);
+  DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
+
+  __ctype_init ();
+
+  start_server ();
+}
+
 static void worker_thread (void* param) {
   //void** drcontexts;
+  //__ctype_init ();
 
   dr_printf("Worker thread\n");
   uint num_unsuspended;
   suspend_params = std::make_pair ((void**) 0, 0U);
   DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
-
-  dr_printf ("Spawning server.\n");
-  struct addrinfo hints, *res;
-  int errcode;
-  char addrstr[100];
-  void *ptr;
-
-  memset (&hints, 0, sizeof (hints));
-  hints.ai_family = PF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags |= AI_CANONNAME;
-
-//isspace ('a');
-//errcode = getaddrinfo ("google.com", NULL, &hints, &res);
-  start_server ();
-  dr_printf ("Done spawning server.\n");
 
   while (true) {
     dr_printf("Worker thread is sleeping\n");
@@ -100,7 +101,11 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
     dr_abort();
   }
 
-  dr_create_client_thread (worker_thread, NULL);
+  //dr_create_client_thread (worker_thread, NULL);
+
+  dr_printf ("Spawning server thread.\n");
+  dr_create_client_thread (server_thread, NULL);
+  dr_printf ("Done spawning server thread.\n");
 
   // uintptr_t fastforward_addr = boost::lexical_cast<HexTo<uintptr_t>> (fastforward_opt.get_value ().first);
   // size_t fastforward_count = boost::lexical_cast<size_t> (fastforward_opt.get_value ().second);

@@ -2,6 +2,7 @@
 // You should copy it to another filename to avoid overwriting it.
 
 #include "../options.hpp"
+#include "dr_api.h"
 #include "ConcreteEvaluator.h"
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
@@ -23,6 +24,13 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
   void addBreakpoint(const Breakpoint& bp) {
     // Your implementation goes here
     printf("addBreakpoint\n");
+
+    if (fastforward_params) {
+      Exception e;
+      e.msg = "Only one breakpoint is supported and one already exists.";
+      throw e;
+    }
+
     auto addr = bp.addr;
     auto count = bp.count;
     fastforward_params = std::make_pair (addr, count);
@@ -31,6 +39,16 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
   EventType::type executeUntilEvent(const EventTypes& stopEvents) {
     // Your implementation goes here
     printf("executeUntilEvent\n");
+
+    if (!suspend_params) {
+      Exception e;
+      e.msg = "Execution is not currently suspended.";
+      throw e;
+    }
+
+    assert (dr_resume_all_other_threads (suspend_params->first, suspend_params->second));
+
+    // XXX: Block until we stop
   }
 
 };
