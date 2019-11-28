@@ -41,34 +41,39 @@ extern "C" {
   void __ctype_init (void);
 }
 
-static void server_thread (void* param) {
-  dr_printf ("Server thread\n");
-
+static void suspend (void) {
   uint num_unsuspended;
   suspend_params = std::make_pair ((void**) 0, 0U);
   DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
+}
+
+static void server_thread (void* param) {
+  dr_printf ("Server thread\n");
+  dr_client_thread_set_suspendable (false);
+
+  suspend ();
 
   __ctype_init ();
 
   start_server ();
 }
 
-static void worker_thread (void* param) {
-  //void** drcontexts;
-  //__ctype_init ();
+// static void worker_thread (void* param) {
+//   //void** drcontexts;
+//   //__ctype_init ();
 
-  dr_printf("Worker thread\n");
-  uint num_unsuspended;
-  suspend_params = std::make_pair ((void**) 0, 0U);
-  DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
+//   dr_printf("Worker thread\n");
+//   uint num_unsuspended;
+//   suspend_params = std::make_pair ((void**) 0, 0U);
+//   DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
 
-  while (true) {
-    dr_printf("Worker thread is sleeping\n");
-    dr_sleep (5000);
-    // assert (dr_resume_all_other_threads (drcontexts, num_suspended));
-    // dr_sleep (50);
-  }
-};
+//   while (true) {
+//     dr_printf("Worker thread is sleeping\n");
+//     dr_sleep (5000);
+//     // assert (dr_resume_all_other_threads (drcontexts, num_suspended));
+//     // dr_sleep (50);
+//   }
+// };
 
 static void
 event_thread_init (void *drcontext) {
@@ -87,6 +92,18 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating);
 
+void suspender_thread (void *) {
+  dr_printf ("Suspender thread\n");
+  dr_client_thread_set_suspendable (false);
+
+  while (true) {
+    dr_printf ("Waiting in suspender thread\n");
+    dr_event_wait (*suspend_event);
+    dr_printf ("Suspender thread awake!\n");
+    suspend ();
+  }
+}
+
 DR_EXPORT void
 dr_client_main(client_id_t id, int argc, const char *argv[])
 {
@@ -101,8 +118,12 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
     dr_abort();
   }
 
-  //dr_create_client_thread (worker_thread, NULL);
+  suspend_event = dr_event_create ();
 
+  dr_printf ("Spawning suspender thread\n");
+  dr_create_client_thread (suspender_thread, NULL);
+  dr_printf ("Done spawning suspender thread\n");
+  
   dr_printf ("Spawning server thread.\n");
   dr_create_client_thread (server_thread, NULL);
   dr_printf ("Done spawning server thread.\n");
@@ -127,9 +148,13 @@ static void clean_call (void* addr) {
 }
 
 static void update_fastforward_count (void) {
+  dr_printf("Updating count\n");
   if (--fastforward_params->second == 0) {
     fastforwarding = false;
     dr_printf ("Done fast forwarding!\n");
+    dr_event_signal (*suspend_event);
+    dr_sleep (1000);
+    // XXX: Suspend all threads except for the server thread
   }
 }
 
@@ -141,14 +166,15 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
       if (instr_get_app_pc (instr) == (void*) fastforward_params->first) {
+        dr_printf("Found it...\n");
         dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 0);
         break;
       }
     }
   }
-  else {
-    dr_insert_clean_call (drcontext, bb, instrlist_first (bb), (void*) clean_call, false, 1,
-                          OPND_CREATE_INTPTR (instr_get_app_pc (instrlist_first (bb))));
+   {
+    // dr_insert_clean_call (drcontext, bb, instrlist_first (bb), (void*) clean_call, false, 1,
+    //                       OPND_CREATE_INTPTR (instr_get_app_pc (instrlist_first (bb))));
 
 
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
@@ -157,6 +183,7 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
       dr_printf ("Instr @%#Lx %s\n", instr_get_app_pc (instr), buf);
 
       // Dst
+      if (false) {
       auto num_dsts = instr_num_dsts (instr);
       for (unsigned int i = 0; i < num_dsts; i++) {
         opnd_t op = instr_get_dst (instr, i);
@@ -186,6 +213,7 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
           reg_id_t r = opnd_get_reg (op);
           dr_printf ("Srcop %d is a register %s\n", i, get_register_name (opnd_get_reg (op)));
         }
+      }
       }
 
     }

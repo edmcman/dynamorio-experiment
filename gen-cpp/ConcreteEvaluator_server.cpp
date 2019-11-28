@@ -34,6 +34,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     auto addr = bp.addr;
     auto count = bp.count;
     fastforward_params = std::make_pair (addr, count);
+    dr_printf("(%#Lx, %#Lx)\n", addr, count);
   }
 
   EventType::type executeUntilEvent(const EventTypes& stopEvents) {
