@@ -1,3 +1,4 @@
+#include "gen-cpp/ConcreteEvaluator.h"
 #include <cstdlib>
 #include <cstdint>
 #include <utility>
@@ -9,3 +10,5 @@ extern std::optional<std::pair <uintptr_t, size_t>> fastforward_params;
 extern std::optional<std::pair <void**, uint>> suspend_params;
 
 extern std::optional<void*> suspend_event;
+
+extern std::optional<EventTypes> stop_events;

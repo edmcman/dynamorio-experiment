@@ -1,5 +1,5 @@
 set (CMAKE_CXX_STANDARD 17)
-add_library(myclient SHARED myclient.cpp options.cpp gen-cpp/ConcreteEvaluator_server.cpp gen-cpp/ConcreteEvaluator.cpp gen-cpp/concolic_constants.cpp gen-cpp/concolic_types.cpp)
+add_library(myclient SHARED myclient.cpp helpers.cpp options.cpp gen-cpp/ConcreteEvaluator_server.cpp gen-cpp/ConcreteEvaluator.cpp gen-cpp/concolic_constants.cpp gen-cpp/concolic_types.cpp)
 
 find_package(Thrift)
 if (NOT Thrift_FOUND)
