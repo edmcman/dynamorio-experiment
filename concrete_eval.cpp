@@ -118,7 +118,7 @@ static void update_fastforward_count (void) {
     dr_printf ("Done fast forwarding!\n");
 
     if (stop_events->count (EventType::Breakpoint)) {
-      suspend_helper ();
+      suspend_helper (std::make_optional (EventType::Breakpoint));
     }
   }
 }
@@ -126,7 +126,7 @@ static void update_fastforward_count (void) {
 static void relevant_block_clean_call (void) {
   if (stop_events->count (EventType::RelevantBlock)) {
     dr_printf ("relevant_block!\n");
-    suspend_helper ();
+    suspend_helper (std::make_optional (EventType::RelevantBlock));
   } else {
     dr_printf("Ignoring stale instrumentation\n");
   }

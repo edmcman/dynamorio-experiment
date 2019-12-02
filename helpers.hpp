@@ -1,13 +1,22 @@
 #include "dr_api.h"
 #include "options.hpp"
 
+static void resume_application_threads (void) {
+  stopped_event = std::nullopt;
+  assert (dr_resume_all_other_threads (suspend_params->first, suspend_params->second));
+  suspend_params = std::nullopt;
+}
+
 static void suspend_application_threads (void) {
   uint num_unsuspended;
   suspend_params = std::make_pair ((void**) 0, 0U);
   DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));
 }
 
-static void suspend_helper (void) {
+static void suspend_helper (const std::optional<EventType::type> &e) {
+  // Save the event type
+  stopped_event = e;
+
   // Signal the suspender thread to suspend all application threads
   // (including this one)
   dr_event_signal (*suspend_event);

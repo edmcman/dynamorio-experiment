@@ -11,4 +11,8 @@ extern std::optional<std::pair <void**, uint>> suspend_params;
 
 extern std::optional<void*> suspend_event;
 
+// What events should we stop for?
 extern std::optional<EventTypes> stop_events;
+
+// What was the event that caused us to stop?
+extern std::optional<EventType::type> stopped_event;

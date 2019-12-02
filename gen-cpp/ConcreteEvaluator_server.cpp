@@ -52,7 +52,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     total_flush ();
 
-    assert (dr_resume_all_other_threads (suspend_params->first, suspend_params->second));
+    resume_application_threads ();
 
     // Block until we stop
     dr_event_wait (*suspend_event);
@@ -61,6 +61,9 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     suspend_application_threads ();
 
     printf("Stop!\n");
+
+    assert (stopped_event);
+    return *stopped_event;
   }
 
 };
