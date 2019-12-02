@@ -8,4 +8,5 @@ std::optional<void*> suspend_event;
 
 std::optional<EventTypes> stop_events;
 
-std::optional<EventType::type> stopped_event;
+std::optional<std::pair <EventType::type, dr_mcontext_t>> stopped_context;
+

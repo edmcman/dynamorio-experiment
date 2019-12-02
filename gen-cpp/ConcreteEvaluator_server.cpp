@@ -62,8 +62,8 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     printf("Stop!\n");
 
-    assert (stopped_event);
-    return *stopped_event;
+    assert (stopped_context);
+    return stopped_context->first;
   }
 
 };

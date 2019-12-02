@@ -2,7 +2,7 @@
 #include "options.hpp"
 
 static void resume_application_threads (void) {
-  stopped_event = std::nullopt;
+  stopped_context = std::nullopt;
   assert (dr_resume_all_other_threads (suspend_params->first, suspend_params->second));
   suspend_params = std::nullopt;
 }
@@ -15,7 +15,13 @@ static void suspend_application_threads (void) {
 
 static void suspend_helper (const std::optional<EventType::type> &e) {
   // Save the event type
-  stopped_event = e;
+  void *drcontext = dr_get_current_drcontext ();
+  dr_mcontext_t mcontext = {
+    sizeof (mcontext),
+    DR_MC_ALL,
+  };
+  dr_get_mcontext (drcontext, &mcontext);
+  stopped_context = std::make_optional (std::make_pair (*e, mcontext));
 
   // Signal the suspender thread to suspend all application threads
   // (including this one)

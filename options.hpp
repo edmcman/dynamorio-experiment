@@ -1,3 +1,4 @@
+#include "dr_api.h"
 #include "gen-cpp/ConcreteEvaluator.h"
 #include <cstdlib>
 #include <cstdint>
@@ -14,5 +15,5 @@ extern std::optional<void*> suspend_event;
 // What events should we stop for?
 extern std::optional<EventTypes> stop_events;
 
-// What was the event that caused us to stop?
-extern std::optional<EventType::type> stopped_event;
+// What was the event and context when we stopped?
+extern std::optional<std::pair <EventType::type, dr_mcontext_t>> stopped_context;
