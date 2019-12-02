@@ -10,6 +10,11 @@ struct Breakpoint {
   2: i64 count
 }
 
+struct CodeBlock {
+  1: Addr addr,
+  2: binary bytes
+}
+
 enum EventType {
   Breakpoint,
   Timeout,
@@ -31,6 +36,8 @@ service ConcreteEvaluator {
 
   EventType executeUntilEvent(1: EventTypes stopEvents)
 
+  CodeBlock getCodeBlock () throws (1: Exception exc)
+
   /*
   void introduceTaintToMemory(1: Addr addr, 2: i32 numBytes = 1)
 
@@ -39,6 +46,6 @@ service ConcreteEvaluator {
 
   byte getByteFromMemory(1: Addr addr)
 
-  list<byte> getBytesFromMemory(1: Addr addr, 2: i32 numBytes = 1)
+  binary getBytesFromMemory(1: Addr addr, 2: i32 numBytes = 1)
   */
 }

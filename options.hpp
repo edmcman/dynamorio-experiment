@@ -17,3 +17,6 @@ extern std::optional<EventTypes> stop_events;
 
 // What was the event and context when we stopped?
 extern std::optional<std::pair <EventType::type, dr_mcontext_t>> stopped_context;
+
+// What was the last block when we stopped? [start, end)
+extern std::optional<std::pair <app_pc, app_pc>> stopped_block;

@@ -50,6 +50,8 @@ typedef std::set<EventType::type>  EventTypes;
 
 class Breakpoint;
 
+class CodeBlock;
+
 class Exception;
 
 typedef struct _Breakpoint__isset {
@@ -99,6 +101,54 @@ class Breakpoint : public virtual ::apache::thrift::TBase {
 void swap(Breakpoint &a, Breakpoint &b);
 
 std::ostream& operator<<(std::ostream& out, const Breakpoint& obj);
+
+typedef struct _CodeBlock__isset {
+  _CodeBlock__isset() : addr(false), bytes(false) {}
+  bool addr :1;
+  bool bytes :1;
+} _CodeBlock__isset;
+
+class CodeBlock : public virtual ::apache::thrift::TBase {
+ public:
+
+  CodeBlock(const CodeBlock&);
+  CodeBlock& operator=(const CodeBlock&);
+  CodeBlock() : addr(0), bytes() {
+  }
+
+  virtual ~CodeBlock() noexcept;
+  Addr addr;
+  std::string bytes;
+
+  _CodeBlock__isset __isset;
+
+  void __set_addr(const Addr val);
+
+  void __set_bytes(const std::string& val);
+
+  bool operator == (const CodeBlock & rhs) const
+  {
+    if (!(addr == rhs.addr))
+      return false;
+    if (!(bytes == rhs.bytes))
+      return false;
+    return true;
+  }
+  bool operator != (const CodeBlock &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const CodeBlock & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(CodeBlock &a, CodeBlock &b);
+
+std::ostream& operator<<(std::ostream& out, const CodeBlock& obj);
 
 typedef struct _Exception__isset {
   _Exception__isset() : msg(false) {}

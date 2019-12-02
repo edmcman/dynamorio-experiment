@@ -225,17 +225,17 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_SET) {
           {
             this->stopEvents.clear();
-            uint32_t _size4;
-            ::apache::thrift::protocol::TType _etype7;
-            xfer += iprot->readSetBegin(_etype7, _size4);
-            uint32_t _i8;
-            for (_i8 = 0; _i8 < _size4; ++_i8)
+            uint32_t _size6;
+            ::apache::thrift::protocol::TType _etype9;
+            xfer += iprot->readSetBegin(_etype9, _size6);
+            uint32_t _i10;
+            for (_i10 = 0; _i10 < _size6; ++_i10)
             {
-              EventType::type _elem9;
-              int32_t ecast10;
-              xfer += iprot->readI32(ecast10);
-              _elem9 = (EventType::type)ecast10;
-              this->stopEvents.insert(_elem9);
+              EventType::type _elem11;
+              int32_t ecast12;
+              xfer += iprot->readI32(ecast12);
+              _elem11 = (EventType::type)ecast12;
+              this->stopEvents.insert(_elem11);
             }
             xfer += iprot->readSetEnd();
           }
@@ -264,10 +264,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->stopEvents.size()));
-    std::set<EventType::type> ::const_iterator _iter11;
-    for (_iter11 = this->stopEvents.begin(); _iter11 != this->stopEvents.end(); ++_iter11)
+    std::set<EventType::type> ::const_iterator _iter13;
+    for (_iter13 = this->stopEvents.begin(); _iter13 != this->stopEvents.end(); ++_iter13)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter11));
+      xfer += oprot->writeI32((int32_t)(*_iter13));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -291,10 +291,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_pargs::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->stopEvents)).size()));
-    std::set<EventType::type> ::const_iterator _iter12;
-    for (_iter12 = (*(this->stopEvents)).begin(); _iter12 != (*(this->stopEvents)).end(); ++_iter12)
+    std::set<EventType::type> ::const_iterator _iter14;
+    for (_iter14 = (*(this->stopEvents)).begin(); _iter14 != (*(this->stopEvents)).end(); ++_iter14)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter12));
+      xfer += oprot->writeI32((int32_t)(*_iter14));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -333,9 +333,9 @@ uint32_t ConcreteEvaluator_executeUntilEvent_result::read(::apache::thrift::prot
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast13;
-          xfer += iprot->readI32(ecast13);
-          this->success = (EventType::type)ecast13;
+          int32_t ecast15;
+          xfer += iprot->readI32(ecast15);
+          this->success = (EventType::type)ecast15;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -397,10 +397,196 @@ uint32_t ConcreteEvaluator_executeUntilEvent_presult::read(::apache::thrift::pro
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast14;
-          xfer += iprot->readI32(ecast14);
-          (*(this->success)) = (EventType::type)ecast14;
+          int32_t ecast16;
+          xfer += iprot->readI32(ecast16);
+          (*(this->success)) = (EventType::type)ecast16;
           this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ConcreteEvaluator_getCodeBlock_args::~ConcreteEvaluator_getCodeBlock_args() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getCodeBlock_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_getCodeBlock_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getCodeBlock_args");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getCodeBlock_pargs::~ConcreteEvaluator_getCodeBlock_pargs() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getCodeBlock_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getCodeBlock_pargs");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getCodeBlock_result::~ConcreteEvaluator_getCodeBlock_result() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getCodeBlock_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->exc.read(iprot);
+          this->__isset.exc = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_getCodeBlock_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getCodeBlock_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.exc) {
+    xfer += oprot->writeFieldBegin("exc", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->exc.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getCodeBlock_presult::~ConcreteEvaluator_getCodeBlock_presult() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getCodeBlock_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->exc.read(iprot);
+          this->__isset.exc = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -531,6 +717,66 @@ EventType::type ConcreteEvaluatorClient::recv_executeUntilEvent()
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "executeUntilEvent failed: unknown result");
 }
 
+void ConcreteEvaluatorClient::getCodeBlock(CodeBlock& _return)
+{
+  send_getCodeBlock();
+  recv_getCodeBlock(_return);
+}
+
+void ConcreteEvaluatorClient::send_getCodeBlock()
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("getCodeBlock", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_getCodeBlock_pargs args;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ConcreteEvaluatorClient::recv_getCodeBlock(CodeBlock& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("getCodeBlock") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ConcreteEvaluator_getCodeBlock_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.exc) {
+    throw result.exc;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getCodeBlock failed: unknown result");
+}
+
 bool ConcreteEvaluatorProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
   ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
@@ -657,6 +903,63 @@ void ConcreteEvaluatorProcessor::process_executeUntilEvent(int32_t seqid, ::apac
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->postWrite(ctx, "ConcreteEvaluator.executeUntilEvent", bytes);
+  }
+}
+
+void ConcreteEvaluatorProcessor::process_getCodeBlock(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ConcreteEvaluator.getCodeBlock", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ConcreteEvaluator.getCodeBlock");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ConcreteEvaluator.getCodeBlock");
+  }
+
+  ConcreteEvaluator_getCodeBlock_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ConcreteEvaluator.getCodeBlock", bytes);
+  }
+
+  ConcreteEvaluator_getCodeBlock_result result;
+  try {
+    iface_->getCodeBlock(result.success);
+    result.__isset.success = true;
+  } catch (Exception &exc) {
+    result.exc = exc;
+    result.__isset.exc = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ConcreteEvaluator.getCodeBlock");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("getCodeBlock", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ConcreteEvaluator.getCodeBlock");
+  }
+
+  oprot->writeMessageBegin("getCodeBlock", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ConcreteEvaluator.getCodeBlock", bytes);
   }
 }
 
@@ -824,6 +1127,93 @@ EventType::type ConcreteEvaluatorConcurrentClient::recv_executeUntilEvent(const 
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "executeUntilEvent failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+void ConcreteEvaluatorConcurrentClient::getCodeBlock(CodeBlock& _return)
+{
+  int32_t seqid = send_getCodeBlock();
+  recv_getCodeBlock(_return, seqid);
+}
+
+int32_t ConcreteEvaluatorConcurrentClient::send_getCodeBlock()
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  oprot_->writeMessageBegin("getCodeBlock", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_getCodeBlock_pargs args;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ConcreteEvaluatorConcurrentClient::recv_getCodeBlock(CodeBlock& _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("getCodeBlock") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ConcreteEvaluator_getCodeBlock_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.exc) {
+        sentry.commit();
+        throw result.exc;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getCodeBlock failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);

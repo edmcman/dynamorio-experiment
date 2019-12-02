@@ -28,6 +28,11 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     printf("executeUntilEvent\n");
   }
 
+  void getCodeBlock(CodeBlock& _return) {
+    // Your implementation goes here
+    printf("getCodeBlock\n");
+  }
+
 };
 
 int main(int argc, char **argv) {

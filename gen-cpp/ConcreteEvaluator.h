@@ -24,6 +24,7 @@ class ConcreteEvaluatorIf {
   virtual ~ConcreteEvaluatorIf() {}
   virtual void addBreakpoint(const Breakpoint& bp) = 0;
   virtual EventType::type executeUntilEvent(const EventTypes& stopEvents) = 0;
+  virtual void getCodeBlock(CodeBlock& _return) = 0;
 };
 
 class ConcreteEvaluatorIfFactory {
@@ -59,6 +60,9 @@ class ConcreteEvaluatorNull : virtual public ConcreteEvaluatorIf {
   EventType::type executeUntilEvent(const EventTypes& /* stopEvents */) {
     EventType::type _return = (EventType::type)0;
     return _return;
+  }
+  void getCodeBlock(CodeBlock& /* _return */) {
+    return;
   }
 };
 
@@ -270,6 +274,106 @@ class ConcreteEvaluator_executeUntilEvent_presult {
 
 };
 
+
+class ConcreteEvaluator_getCodeBlock_args {
+ public:
+
+  ConcreteEvaluator_getCodeBlock_args(const ConcreteEvaluator_getCodeBlock_args&);
+  ConcreteEvaluator_getCodeBlock_args& operator=(const ConcreteEvaluator_getCodeBlock_args&);
+  ConcreteEvaluator_getCodeBlock_args() {
+  }
+
+  virtual ~ConcreteEvaluator_getCodeBlock_args() noexcept;
+
+  bool operator == (const ConcreteEvaluator_getCodeBlock_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_getCodeBlock_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_getCodeBlock_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ConcreteEvaluator_getCodeBlock_pargs {
+ public:
+
+
+  virtual ~ConcreteEvaluator_getCodeBlock_pargs() noexcept;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_getCodeBlock_result__isset {
+  _ConcreteEvaluator_getCodeBlock_result__isset() : success(false), exc(false) {}
+  bool success :1;
+  bool exc :1;
+} _ConcreteEvaluator_getCodeBlock_result__isset;
+
+class ConcreteEvaluator_getCodeBlock_result {
+ public:
+
+  ConcreteEvaluator_getCodeBlock_result(const ConcreteEvaluator_getCodeBlock_result&);
+  ConcreteEvaluator_getCodeBlock_result& operator=(const ConcreteEvaluator_getCodeBlock_result&);
+  ConcreteEvaluator_getCodeBlock_result() {
+  }
+
+  virtual ~ConcreteEvaluator_getCodeBlock_result() noexcept;
+  CodeBlock success;
+  Exception exc;
+
+  _ConcreteEvaluator_getCodeBlock_result__isset __isset;
+
+  void __set_success(const CodeBlock& val);
+
+  void __set_exc(const Exception& val);
+
+  bool operator == (const ConcreteEvaluator_getCodeBlock_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    if (!(exc == rhs.exc))
+      return false;
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_getCodeBlock_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_getCodeBlock_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_getCodeBlock_presult__isset {
+  _ConcreteEvaluator_getCodeBlock_presult__isset() : success(false), exc(false) {}
+  bool success :1;
+  bool exc :1;
+} _ConcreteEvaluator_getCodeBlock_presult__isset;
+
+class ConcreteEvaluator_getCodeBlock_presult {
+ public:
+
+
+  virtual ~ConcreteEvaluator_getCodeBlock_presult() noexcept;
+  CodeBlock* success;
+  Exception exc;
+
+  _ConcreteEvaluator_getCodeBlock_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class ConcreteEvaluatorClient : virtual public ConcreteEvaluatorIf {
  public:
   ConcreteEvaluatorClient(std::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -301,6 +405,9 @@ class ConcreteEvaluatorClient : virtual public ConcreteEvaluatorIf {
   EventType::type executeUntilEvent(const EventTypes& stopEvents);
   void send_executeUntilEvent(const EventTypes& stopEvents);
   EventType::type recv_executeUntilEvent();
+  void getCodeBlock(CodeBlock& _return);
+  void send_getCodeBlock();
+  void recv_getCodeBlock(CodeBlock& _return);
  protected:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -318,11 +425,13 @@ class ConcreteEvaluatorProcessor : public ::apache::thrift::TDispatchProcessor {
   ProcessMap processMap_;
   void process_addBreakpoint(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_executeUntilEvent(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_getCodeBlock(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   ConcreteEvaluatorProcessor(::std::shared_ptr<ConcreteEvaluatorIf> iface) :
     iface_(iface) {
     processMap_["addBreakpoint"] = &ConcreteEvaluatorProcessor::process_addBreakpoint;
     processMap_["executeUntilEvent"] = &ConcreteEvaluatorProcessor::process_executeUntilEvent;
+    processMap_["getCodeBlock"] = &ConcreteEvaluatorProcessor::process_getCodeBlock;
   }
 
   virtual ~ConcreteEvaluatorProcessor() {}
@@ -369,6 +478,16 @@ class ConcreteEvaluatorMultiface : virtual public ConcreteEvaluatorIf {
     return ifaces_[i]->executeUntilEvent(stopEvents);
   }
 
+  void getCodeBlock(CodeBlock& _return) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->getCodeBlock(_return);
+    }
+    ifaces_[i]->getCodeBlock(_return);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -407,6 +526,9 @@ class ConcreteEvaluatorConcurrentClient : virtual public ConcreteEvaluatorIf {
   EventType::type executeUntilEvent(const EventTypes& stopEvents);
   int32_t send_executeUntilEvent(const EventTypes& stopEvents);
   EventType::type recv_executeUntilEvent(const int32_t seqid);
+  void getCodeBlock(CodeBlock& _return);
+  int32_t send_getCodeBlock();
+  void recv_getCodeBlock(CodeBlock& _return, const int32_t seqid);
  protected:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

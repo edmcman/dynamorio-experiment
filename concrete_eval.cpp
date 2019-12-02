@@ -111,22 +111,22 @@ static void clean_call (void* addr) {
   dr_printf ("Executing block at %#Lx, rax=%#Lx, pc=%#Lx\n", addr, mcontext.rax, mcontext.pc);
 }
 
-static void update_fastforward_count (void) {
+static void update_fastforward_count (app_pc start, app_pc end) {
   dr_printf("Updating count\n");
   if (--fastforward_params->second == 0) {
     fastforward_params = std::nullopt;
     dr_printf ("Done fast forwarding!\n");
 
     if (stop_events->count (EventType::Breakpoint)) {
-      suspend_helper (std::make_optional (EventType::Breakpoint));
+      suspend_helper (std::make_optional (EventType::Breakpoint), start, end);
     }
   }
 }
 
-static void relevant_block_clean_call (void) {
+static void relevant_block_clean_call (app_pc start, app_pc end) {
   if (stop_events->count (EventType::RelevantBlock)) {
-    dr_printf ("relevant_block!\n");
-    suspend_helper (std::make_optional (EventType::RelevantBlock));
+    dr_printf ("relevant_block! %#Lx %#Lx\n", start, end);
+    suspend_helper (std::make_optional (EventType::RelevantBlock), start, end);
   } else {
     dr_printf("Ignoring stale instrumentation\n");
   }
@@ -136,12 +136,18 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating)
 {
+
+  instr_t *first = instrlist_first_app (bb);
+  instr_t *last = instrlist_last_app (bb);
+  app_pc firstpc = instr_get_app_pc (first);
+  app_pc lastpc = instr_get_app_pc (last) + instr_length (drcontext, last);
+
   if (fastforward_params) {
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
       if (instr_get_app_pc (instr) == (void*) fastforward_params->first) {
         dr_printf("Found it...\n");
-        dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 0);
+        dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 2, OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
         break;
       }
     }
@@ -149,7 +155,7 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
 
   if (stop_events->count (EventType::RelevantBlock)) {
     instr_t *instr = instrlist_first (bb);
-    dr_insert_clean_call (drcontext, bb, instr, (void*) relevant_block_clean_call, false, 0);
+    dr_insert_clean_call (drcontext, bb, instr, (void*) relevant_block_clean_call, false, 2, OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
   }
 
   return DR_EMIT_DEFAULT;

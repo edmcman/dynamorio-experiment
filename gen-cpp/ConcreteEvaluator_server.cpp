@@ -26,11 +26,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     printf("addBreakpoint\n");
 
-    if (fastforward_params) {
-      Exception e;
-      e.msg = "Only one breakpoint is supported and one already exists.";
-      throw e;
-    }
+    assert_helper (!fastforward_params, "Only one breakpoint is supported and one already exists.");
 
     auto addr = bp.addr;
     auto count = bp.count;
@@ -62,9 +58,23 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     printf("Stop!\n");
 
-    assert (stopped_context);
+    assert_helper ((bool) stopped_context, "Internal error: unable to locate stopped context.");
     return stopped_context->first;
   }
+
+  void getCodeBlock(CodeBlock& _return) {
+    // Your implementation goes here
+    dr_printf("getCodeBlock\n");
+
+    assert_helper ((bool) stopped_block, "Unable to locate stopped block.");
+
+    size_t size = stopped_block->second - stopped_block->first;
+
+    _return.addr = (Addr) stopped_block->first;
+    _return.bytes = std::string (stopped_block->first, stopped_block->second); //.resize (size);
+    //memmove (_return.bytes.data (), stopped_block->first, size);
+  }
+
 
 };
 

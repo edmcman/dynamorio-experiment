@@ -10,3 +10,4 @@ std::optional<EventTypes> stop_events;
 
 std::optional<std::pair <EventType::type, dr_mcontext_t>> stopped_context;
 
+std::optional<std::pair <app_pc, app_pc>> stopped_block;
