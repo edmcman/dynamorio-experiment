@@ -7,7 +7,7 @@
 
 extern std::optional<void*> mutex;
 
-extern std::optional<std::pair <uintptr_t, size_t>> fastforward_params;
+extern std::map<app_pc, size_t> fastforward_params;
 
 // Set whenever threads are suspended
 extern std::optional<std::pair <void**, uint>> suspend_params;

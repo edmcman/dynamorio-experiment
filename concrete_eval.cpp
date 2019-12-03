@@ -112,16 +112,33 @@ static void clean_call (void* addr) {
   dr_printf ("Executing block at %#Lx, rax=%#Lx, pc=%#Lx\n", addr, mcontext.rax, mcontext.pc);
 }
 
-static void update_fastforward_count (app_pc start, app_pc end) {
-  dr_printf("Updating count\n");
-  if (--fastforward_params->second == 0) {
-    fastforward_params = std::nullopt;
-    dr_printf ("Done fast forwarding!\n");
+static void update_fastforward_count (app_pc addr, app_pc start, app_pc end) {
+  bool stale = false;
 
-    if (stop_events->count (EventType::Breakpoint)) {
-      suspend_helper (std::make_optional (EventType::Breakpoint), start, end);
+  dr_mutex_lock (*mutex);
+  if (fastforward_params.count (addr)) {
+    auto new_count = --fastforward_params.at (addr);
+    fastforward_params.at (addr) = new_count;
+
+    if (new_count == 0) {
+      fastforward_params.erase (addr);
+      dr_printf ("Done fast forwarding!\n");
+
+      if (stop_events->count (EventType::Breakpoint)) {
+        suspend_helper (std::make_optional (EventType::Breakpoint), start, end);
+        return;
+      }
+    } else {
+      dr_printf ("Count at %d\n", new_count);
     }
+  } else {
+    dr_printf ("Removing stale instrumentation at %#Lx\n", addr);
+    stale = true;
   }
+
+  dr_mutex_unlock (*mutex);
+  // We need to flush without holding the lock
+  if (stale) total_flush ();
 }
 
 static void relevant_block_clean_call (app_pc start, app_pc end) {
@@ -143,13 +160,16 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
   app_pc firstpc = instr_get_app_pc (first);
   app_pc lastpc = instr_get_app_pc (last) + instr_length (drcontext, last);
 
-  if (fastforward_params) {
+  dr_mutex_lock (*mutex);
+  
+  if (std::any_of (fastforward_params.begin (),
+                   fastforward_params.end (),
+                   [&] (const auto &p) { return firstpc <= p.first && p.first <= lastpc; })) {
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
-      if (instr_get_app_pc (instr) == (void*) fastforward_params->first) {
-        dr_printf("Found it...\n");
-        dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 2, OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
-        break;
+      if (fastforward_params.count (instr_get_app_pc (instr))) {
+        dr_printf("Found one...\n");
+        dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 3, OPND_CREATE_INTPTR (instr_get_app_pc (instr)), OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
       }
     }
   }
@@ -158,6 +178,8 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
     instr_t *instr = instrlist_first (bb);
     dr_insert_clean_call (drcontext, bb, instr, (void*) relevant_block_clean_call, false, 2, OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
   }
+
+  dr_mutex_unlock (*mutex);
 
   return DR_EMIT_DEFAULT;
 }

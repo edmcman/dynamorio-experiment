@@ -26,12 +26,13 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     printf("addBreakpoint\n");
 
-    dr_mutex_lock (*mutex);
-    assert_helper (!fastforward_params, "Only one breakpoint is supported and one already exists.", true);
+    auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, true);
 
-    auto addr = (uintptr_t) AbsOrRelAddr_to_AbsAddr (bp.addr, true);
+    dr_mutex_lock (*mutex);
+    assert_helper (fastforward_params.count (addr) == 0 || fastforward_params[addr] == 0, "Breakpoint already exists and is non-zero", true);
+
     auto count = bp.count;
-    fastforward_params = std::make_pair (addr, count);
+    fastforward_params [addr] = count;
     dr_mutex_unlock (*mutex);
 
     dr_printf("(%#Lx, %#Lx)\n", addr, count);
