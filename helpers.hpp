@@ -1,6 +1,7 @@
 #include "dr_api.h"
 #include "options.hpp"
 
+// MUST LOCK
 static void resume_application_threads (void) {
   stopped_context = std::nullopt;
   stopped_block = std::nullopt;
@@ -8,6 +9,7 @@ static void resume_application_threads (void) {
   suspend_params = std::nullopt;
 }
 
+// MUST LOCK
 static void suspend_application_threads (void) {
   uint num_unsuspended;
   suspend_params = std::make_pair ((void**) 0, 0U);
@@ -41,24 +43,26 @@ static void total_flush (void) {
                                    NULL));
 }
 
-static void assert_helper (bool b, std::string msg) {
+static void assert_helper (bool b, std::string msg, bool unlock_mutex_on_error) {
   if (!b) {
     Exception e;
     e.msg = msg;
+    if (unlock_mutex_on_error)
+      dr_mutex_unlock (*mutex);
     throw e;
   }
 }
 
-static app_pc AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a) {
+static app_pc AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a, bool unlock_mutex_on_error) {
   if (a.__isset.absaddr)
     return (app_pc) a.absaddr;
   else if (a.__isset.reladdr) {
     module_data_t *moddata = dr_lookup_module_by_name (a.reladdr.modulename.c_str ());
-    assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str ());
+    assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str (), unlock_mutex_on_error);
     app_pc r = moddata->start + a.reladdr.offset;
     dr_free_module_data (moddata);
     return r;
   } else {
-    assert_helper (false, "AbsOrRelAddr contained neither an absolute or relative address.");
+    assert_helper (false, "AbsOrRelAddr contained neither an absolute or relative address.", unlock_mutex_on_error);
   }
 }

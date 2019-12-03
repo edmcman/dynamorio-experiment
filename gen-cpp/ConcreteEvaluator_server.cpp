@@ -26,11 +26,14 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     printf("addBreakpoint\n");
 
-    assert_helper (!fastforward_params, "Only one breakpoint is supported and one already exists.");
+    dr_mutex_lock (*mutex);
+    assert_helper (!fastforward_params, "Only one breakpoint is supported and one already exists.", true);
 
-    auto addr = (uintptr_t) AbsOrRelAddr_to_AbsAddr (bp.addr);
+    auto addr = (uintptr_t) AbsOrRelAddr_to_AbsAddr (bp.addr, true);
     auto count = bp.count;
     fastforward_params = std::make_pair (addr, count);
+    dr_mutex_unlock (*mutex);
+
     dr_printf("(%#Lx, %#Lx)\n", addr, count);
   }
 
@@ -40,17 +43,16 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     stop_events = stopEvents;
 
-    if (!suspend_params) {
-      Exception e;
-      e.msg = "Execution is not currently suspended.";
-      throw e;
-    }
+    dr_mutex_lock (*mutex);
+    assert_helper ((bool) suspend_params, "Execution is not currently suspended.", true);
 
     total_flush ();
 
     resume_application_threads ();
 
-    // Block until we stop
+    dr_mutex_unlock (*mutex);
+
+    // Block until we stop. The caller will obtain the mutex.
     dr_event_wait (*suspend_event);
 
     // Suspend
@@ -58,7 +60,9 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     printf("Stop!\n");
 
-    assert_helper ((bool) stopped_context, "Unable to locate stopped context.");
+    assert_helper ((bool) stopped_context, "Unable to locate stopped context.", true);
+    dr_mutex_unlock (*mutex);
+
     return stopped_context->first;
   }
 
@@ -66,12 +70,17 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     dr_printf("getCodeBlock\n");
 
-    assert_helper ((bool) stopped_block, "Unable to locate stopped block.");
+    dr_mutex_lock (*mutex);
+
+    assert_helper ((bool) stopped_block, "Unable to locate stopped block.", true);
 
     size_t size = stopped_block->second - stopped_block->first;
 
     _return.addr = (AbsAddr) stopped_block->first;
-    _return.bytes = std::string (stopped_block->first, stopped_block->second); //.resize (size);
+    _return.bytes = std::string (stopped_block->first, stopped_block->second);
+
+    dr_mutex_unlock (*mutex);
+
     module_data_t *moddata = dr_lookup_module ((byte*) _return.addr);
     if (moddata) {
       ModuleInfo mi;
@@ -90,9 +99,13 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     printf("getContext\n");
 
-    assert_helper ((bool) stopped_context, "Unable to locate stopped context.");
+    dr_mutex_lock (*mutex);
+
+    assert_helper ((bool) stopped_context, "Unable to locate stopped context.", true);
 
     dr_mcontext_t mc = stopped_context->second;
+
+    dr_mutex_unlock (*mutex);
 
     for (int i = DR_REG_START_GPR; i < DR_REG_STOP_GPR; i++) {
       const char *name = get_register_name (i);

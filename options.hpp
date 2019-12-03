@@ -5,6 +5,8 @@
 #include <utility>
 #include <optional>
 
+extern std::optional<void*> mutex;
+
 extern std::optional<std::pair <uintptr_t, size_t>> fastforward_params;
 
 // Set whenever threads are suspended

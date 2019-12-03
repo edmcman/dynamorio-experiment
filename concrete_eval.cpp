@@ -87,6 +87,7 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
     dr_abort();
   }
 
+  mutex = dr_mutex_create ();
   suspend_event = dr_event_create ();
 
   // dr_printf ("Spawning suspender thread\n");
