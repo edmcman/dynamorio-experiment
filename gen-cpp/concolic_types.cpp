@@ -51,11 +51,239 @@ std::string to_string(const EventType::type& val) {
 }
 
 
+RelAddr::~RelAddr() noexcept {
+}
+
+
+void RelAddr::__set_modulename(const std::string& val) {
+  this->modulename = val;
+}
+
+void RelAddr::__set_offset(const Offset val) {
+  this->offset = val;
+}
+std::ostream& operator<<(std::ostream& out, const RelAddr& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t RelAddr::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->modulename);
+          this->__isset.modulename = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->offset);
+          this->__isset.offset = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t RelAddr::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("RelAddr");
+
+  xfer += oprot->writeFieldBegin("modulename", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->modulename);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("offset", ::apache::thrift::protocol::T_I64, 2);
+  xfer += oprot->writeI64(this->offset);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(RelAddr &a, RelAddr &b) {
+  using ::std::swap;
+  swap(a.modulename, b.modulename);
+  swap(a.offset, b.offset);
+  swap(a.__isset, b.__isset);
+}
+
+RelAddr::RelAddr(const RelAddr& other0) {
+  modulename = other0.modulename;
+  offset = other0.offset;
+  __isset = other0.__isset;
+}
+RelAddr& RelAddr::operator=(const RelAddr& other1) {
+  modulename = other1.modulename;
+  offset = other1.offset;
+  __isset = other1.__isset;
+  return *this;
+}
+void RelAddr::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "RelAddr(";
+  out << "modulename=" << to_string(modulename);
+  out << ", " << "offset=" << to_string(offset);
+  out << ")";
+}
+
+
+AbsOrRelAddr::~AbsOrRelAddr() noexcept {
+}
+
+
+void AbsOrRelAddr::__set_absaddr(const AbsAddr val) {
+  this->absaddr = val;
+__isset.absaddr = true;
+}
+
+void AbsOrRelAddr::__set_reladdr(const RelAddr& val) {
+  this->reladdr = val;
+__isset.reladdr = true;
+}
+std::ostream& operator<<(std::ostream& out, const AbsOrRelAddr& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t AbsOrRelAddr::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->absaddr);
+          this->__isset.absaddr = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->reladdr.read(iprot);
+          this->__isset.reladdr = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t AbsOrRelAddr::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("AbsOrRelAddr");
+
+  if (this->__isset.absaddr) {
+    xfer += oprot->writeFieldBegin("absaddr", ::apache::thrift::protocol::T_I64, 1);
+    xfer += oprot->writeI64(this->absaddr);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.reladdr) {
+    xfer += oprot->writeFieldBegin("reladdr", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->reladdr.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(AbsOrRelAddr &a, AbsOrRelAddr &b) {
+  using ::std::swap;
+  swap(a.absaddr, b.absaddr);
+  swap(a.reladdr, b.reladdr);
+  swap(a.__isset, b.__isset);
+}
+
+AbsOrRelAddr::AbsOrRelAddr(const AbsOrRelAddr& other2) {
+  absaddr = other2.absaddr;
+  reladdr = other2.reladdr;
+  __isset = other2.__isset;
+}
+AbsOrRelAddr& AbsOrRelAddr::operator=(const AbsOrRelAddr& other3) {
+  absaddr = other3.absaddr;
+  reladdr = other3.reladdr;
+  __isset = other3.__isset;
+  return *this;
+}
+void AbsOrRelAddr::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "AbsOrRelAddr(";
+  out << "absaddr="; (__isset.absaddr ? (out << to_string(absaddr)) : (out << "<null>"));
+  out << ", " << "reladdr="; (__isset.reladdr ? (out << to_string(reladdr)) : (out << "<null>"));
+  out << ")";
+}
+
+
 Breakpoint::~Breakpoint() noexcept {
 }
 
 
-void Breakpoint::__set_addr(const Addr val) {
+void Breakpoint::__set_addr(const AbsOrRelAddr& val) {
   this->addr = val;
 }
 
@@ -91,8 +319,8 @@ uint32_t Breakpoint::read(::apache::thrift::protocol::TProtocol* iprot) {
     switch (fid)
     {
       case 1:
-        if (ftype == ::apache::thrift::protocol::T_I64) {
-          xfer += iprot->readI64(this->addr);
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->addr.read(iprot);
           this->__isset.addr = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -123,8 +351,8 @@ uint32_t Breakpoint::write(::apache::thrift::protocol::TProtocol* oprot) const {
   ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("Breakpoint");
 
-  xfer += oprot->writeFieldBegin("addr", ::apache::thrift::protocol::T_I64, 1);
-  xfer += oprot->writeI64(this->addr);
+  xfer += oprot->writeFieldBegin("addr", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->addr.write(oprot);
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldBegin("count", ::apache::thrift::protocol::T_I64, 2);
@@ -143,15 +371,15 @@ void swap(Breakpoint &a, Breakpoint &b) {
   swap(a.__isset, b.__isset);
 }
 
-Breakpoint::Breakpoint(const Breakpoint& other0) {
-  addr = other0.addr;
-  count = other0.count;
-  __isset = other0.__isset;
+Breakpoint::Breakpoint(const Breakpoint& other4) {
+  addr = other4.addr;
+  count = other4.count;
+  __isset = other4.__isset;
 }
-Breakpoint& Breakpoint::operator=(const Breakpoint& other1) {
-  addr = other1.addr;
-  count = other1.count;
-  __isset = other1.__isset;
+Breakpoint& Breakpoint::operator=(const Breakpoint& other5) {
+  addr = other5.addr;
+  count = other5.count;
+  __isset = other5.__isset;
   return *this;
 }
 void Breakpoint::printTo(std::ostream& out) const {
@@ -163,16 +391,133 @@ void Breakpoint::printTo(std::ostream& out) const {
 }
 
 
+ModuleInfo::~ModuleInfo() noexcept {
+}
+
+
+void ModuleInfo::__set_addr(const RelAddr& val) {
+  this->addr = val;
+}
+
+void ModuleInfo::__set_base(const AbsAddr val) {
+  this->base = val;
+}
+std::ostream& operator<<(std::ostream& out, const ModuleInfo& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t ModuleInfo::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->addr.read(iprot);
+          this->__isset.addr = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->base);
+          this->__isset.base = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ModuleInfo::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ModuleInfo");
+
+  xfer += oprot->writeFieldBegin("addr", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->addr.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("base", ::apache::thrift::protocol::T_I64, 2);
+  xfer += oprot->writeI64(this->base);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(ModuleInfo &a, ModuleInfo &b) {
+  using ::std::swap;
+  swap(a.addr, b.addr);
+  swap(a.base, b.base);
+  swap(a.__isset, b.__isset);
+}
+
+ModuleInfo::ModuleInfo(const ModuleInfo& other6) {
+  addr = other6.addr;
+  base = other6.base;
+  __isset = other6.__isset;
+}
+ModuleInfo& ModuleInfo::operator=(const ModuleInfo& other7) {
+  addr = other7.addr;
+  base = other7.base;
+  __isset = other7.__isset;
+  return *this;
+}
+void ModuleInfo::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "ModuleInfo(";
+  out << "addr=" << to_string(addr);
+  out << ", " << "base=" << to_string(base);
+  out << ")";
+}
+
+
 CodeBlock::~CodeBlock() noexcept {
 }
 
 
-void CodeBlock::__set_addr(const Addr val) {
+void CodeBlock::__set_addr(const AbsAddr val) {
   this->addr = val;
 }
 
 void CodeBlock::__set_bytes(const std::string& val) {
   this->bytes = val;
+}
+
+void CodeBlock::__set_moduleinfo(const ModuleInfo& val) {
+  this->moduleinfo = val;
+__isset.moduleinfo = true;
 }
 std::ostream& operator<<(std::ostream& out, const CodeBlock& obj)
 {
@@ -218,6 +563,14 @@ uint32_t CodeBlock::read(::apache::thrift::protocol::TProtocol* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->moduleinfo.read(iprot);
+          this->__isset.moduleinfo = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -243,6 +596,11 @@ uint32_t CodeBlock::write(::apache::thrift::protocol::TProtocol* oprot) const {
   xfer += oprot->writeBinary(this->bytes);
   xfer += oprot->writeFieldEnd();
 
+  if (this->__isset.moduleinfo) {
+    xfer += oprot->writeFieldBegin("moduleinfo", ::apache::thrift::protocol::T_STRUCT, 3);
+    xfer += this->moduleinfo.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -252,18 +610,21 @@ void swap(CodeBlock &a, CodeBlock &b) {
   using ::std::swap;
   swap(a.addr, b.addr);
   swap(a.bytes, b.bytes);
+  swap(a.moduleinfo, b.moduleinfo);
   swap(a.__isset, b.__isset);
 }
 
-CodeBlock::CodeBlock(const CodeBlock& other2) {
-  addr = other2.addr;
-  bytes = other2.bytes;
-  __isset = other2.__isset;
+CodeBlock::CodeBlock(const CodeBlock& other8) {
+  addr = other8.addr;
+  bytes = other8.bytes;
+  moduleinfo = other8.moduleinfo;
+  __isset = other8.__isset;
 }
-CodeBlock& CodeBlock::operator=(const CodeBlock& other3) {
-  addr = other3.addr;
-  bytes = other3.bytes;
-  __isset = other3.__isset;
+CodeBlock& CodeBlock::operator=(const CodeBlock& other9) {
+  addr = other9.addr;
+  bytes = other9.bytes;
+  moduleinfo = other9.moduleinfo;
+  __isset = other9.__isset;
   return *this;
 }
 void CodeBlock::printTo(std::ostream& out) const {
@@ -271,6 +632,7 @@ void CodeBlock::printTo(std::ostream& out) const {
   out << "CodeBlock(";
   out << "addr=" << to_string(addr);
   out << ", " << "bytes=" << to_string(bytes);
+  out << ", " << "moduleinfo="; (__isset.moduleinfo ? (out << to_string(moduleinfo)) : (out << "<null>"));
   out << ")";
 }
 
@@ -350,13 +712,13 @@ void swap(Exception &a, Exception &b) {
   swap(a.__isset, b.__isset);
 }
 
-Exception::Exception(const Exception& other4) : TException() {
-  msg = other4.msg;
-  __isset = other4.__isset;
+Exception::Exception(const Exception& other10) : TException() {
+  msg = other10.msg;
+  __isset = other10.__isset;
 }
-Exception& Exception::operator=(const Exception& other5) {
-  msg = other5.msg;
-  __isset = other5.__isset;
+Exception& Exception::operator=(const Exception& other11) {
+  msg = other11.msg;
+  __isset = other11.__isset;
   return *this;
 }
 void Exception::printTo(std::ostream& out) const {

@@ -3,16 +3,37 @@ typedef string RegisterID
 
 typedef map<RegisterID,RegisterValue> RegisterContext
 
-typedef i64 Addr
+// Absolute address
+typedef i64 AbsAddr
+
+// Relative address inside a module
+struct RelAddr {
+  1: string modulename,
+  2: Offset offset
+}
+
+typedef i64 Offset
+
+// Absolute or relative address.  At least one must be set.
+struct AbsOrRelAddr {
+  1: optional AbsAddr absaddr,
+  2: optional RelAddr reladdr
+}
 
 struct Breakpoint {
-  1: Addr addr,
+  1: AbsOrRelAddr addr,
   2: i64 count
 }
 
+struct ModuleInfo {
+  1: RelAddr addr,
+  2: AbsAddr base
+}
+
 struct CodeBlock {
-  1: Addr addr,
-  2: binary bytes
+  1: AbsAddr addr,
+  2: binary bytes,
+  3: optional ModuleInfo moduleinfo
 }
 
 enum EventType {

@@ -48,3 +48,17 @@ static void assert_helper (bool b, std::string msg) {
     throw e;
   }
 }
+
+static app_pc AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a) {
+  if (a.__isset.absaddr)
+    return (app_pc) a.absaddr;
+  else if (a.__isset.reladdr) {
+    module_data_t *moddata = dr_lookup_module_by_name (a.reladdr.modulename.c_str ());
+    assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str ());
+    app_pc r = moddata->start + a.reladdr.offset;
+    dr_free_module_data (moddata);
+    return r;
+  } else {
+    assert_helper (false, "AbsOrRelAddr contained neither an absolute or relative address.");
+  }
+}

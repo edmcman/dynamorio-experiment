@@ -44,15 +44,123 @@ typedef std::string RegisterID;
 
 typedef std::map<RegisterID, RegisterValue>  RegisterContext;
 
-typedef int64_t Addr;
+typedef int64_t AbsAddr;
+
+typedef int64_t Offset;
 
 typedef std::set<EventType::type>  EventTypes;
 
+class RelAddr;
+
+class AbsOrRelAddr;
+
 class Breakpoint;
+
+class ModuleInfo;
 
 class CodeBlock;
 
 class Exception;
+
+typedef struct _RelAddr__isset {
+  _RelAddr__isset() : modulename(false), offset(false) {}
+  bool modulename :1;
+  bool offset :1;
+} _RelAddr__isset;
+
+class RelAddr : public virtual ::apache::thrift::TBase {
+ public:
+
+  RelAddr(const RelAddr&);
+  RelAddr& operator=(const RelAddr&);
+  RelAddr() : modulename(), offset(0) {
+  }
+
+  virtual ~RelAddr() noexcept;
+  std::string modulename;
+  Offset offset;
+
+  _RelAddr__isset __isset;
+
+  void __set_modulename(const std::string& val);
+
+  void __set_offset(const Offset val);
+
+  bool operator == (const RelAddr & rhs) const
+  {
+    if (!(modulename == rhs.modulename))
+      return false;
+    if (!(offset == rhs.offset))
+      return false;
+    return true;
+  }
+  bool operator != (const RelAddr &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const RelAddr & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(RelAddr &a, RelAddr &b);
+
+std::ostream& operator<<(std::ostream& out, const RelAddr& obj);
+
+typedef struct _AbsOrRelAddr__isset {
+  _AbsOrRelAddr__isset() : absaddr(false), reladdr(false) {}
+  bool absaddr :1;
+  bool reladdr :1;
+} _AbsOrRelAddr__isset;
+
+class AbsOrRelAddr : public virtual ::apache::thrift::TBase {
+ public:
+
+  AbsOrRelAddr(const AbsOrRelAddr&);
+  AbsOrRelAddr& operator=(const AbsOrRelAddr&);
+  AbsOrRelAddr() : absaddr(0) {
+  }
+
+  virtual ~AbsOrRelAddr() noexcept;
+  AbsAddr absaddr;
+  RelAddr reladdr;
+
+  _AbsOrRelAddr__isset __isset;
+
+  void __set_absaddr(const AbsAddr val);
+
+  void __set_reladdr(const RelAddr& val);
+
+  bool operator == (const AbsOrRelAddr & rhs) const
+  {
+    if (__isset.absaddr != rhs.__isset.absaddr)
+      return false;
+    else if (__isset.absaddr && !(absaddr == rhs.absaddr))
+      return false;
+    if (__isset.reladdr != rhs.__isset.reladdr)
+      return false;
+    else if (__isset.reladdr && !(reladdr == rhs.reladdr))
+      return false;
+    return true;
+  }
+  bool operator != (const AbsOrRelAddr &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const AbsOrRelAddr & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(AbsOrRelAddr &a, AbsOrRelAddr &b);
+
+std::ostream& operator<<(std::ostream& out, const AbsOrRelAddr& obj);
 
 typedef struct _Breakpoint__isset {
   _Breakpoint__isset() : addr(false), count(false) {}
@@ -65,16 +173,16 @@ class Breakpoint : public virtual ::apache::thrift::TBase {
 
   Breakpoint(const Breakpoint&);
   Breakpoint& operator=(const Breakpoint&);
-  Breakpoint() : addr(0), count(0) {
+  Breakpoint() : count(0) {
   }
 
   virtual ~Breakpoint() noexcept;
-  Addr addr;
+  AbsOrRelAddr addr;
   int64_t count;
 
   _Breakpoint__isset __isset;
 
-  void __set_addr(const Addr val);
+  void __set_addr(const AbsOrRelAddr& val);
 
   void __set_count(const int64_t val);
 
@@ -102,10 +210,59 @@ void swap(Breakpoint &a, Breakpoint &b);
 
 std::ostream& operator<<(std::ostream& out, const Breakpoint& obj);
 
+typedef struct _ModuleInfo__isset {
+  _ModuleInfo__isset() : addr(false), base(false) {}
+  bool addr :1;
+  bool base :1;
+} _ModuleInfo__isset;
+
+class ModuleInfo : public virtual ::apache::thrift::TBase {
+ public:
+
+  ModuleInfo(const ModuleInfo&);
+  ModuleInfo& operator=(const ModuleInfo&);
+  ModuleInfo() : base(0) {
+  }
+
+  virtual ~ModuleInfo() noexcept;
+  RelAddr addr;
+  AbsAddr base;
+
+  _ModuleInfo__isset __isset;
+
+  void __set_addr(const RelAddr& val);
+
+  void __set_base(const AbsAddr val);
+
+  bool operator == (const ModuleInfo & rhs) const
+  {
+    if (!(addr == rhs.addr))
+      return false;
+    if (!(base == rhs.base))
+      return false;
+    return true;
+  }
+  bool operator != (const ModuleInfo &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ModuleInfo & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(ModuleInfo &a, ModuleInfo &b);
+
+std::ostream& operator<<(std::ostream& out, const ModuleInfo& obj);
+
 typedef struct _CodeBlock__isset {
-  _CodeBlock__isset() : addr(false), bytes(false) {}
+  _CodeBlock__isset() : addr(false), bytes(false), moduleinfo(false) {}
   bool addr :1;
   bool bytes :1;
+  bool moduleinfo :1;
 } _CodeBlock__isset;
 
 class CodeBlock : public virtual ::apache::thrift::TBase {
@@ -117,20 +274,27 @@ class CodeBlock : public virtual ::apache::thrift::TBase {
   }
 
   virtual ~CodeBlock() noexcept;
-  Addr addr;
+  AbsAddr addr;
   std::string bytes;
+  ModuleInfo moduleinfo;
 
   _CodeBlock__isset __isset;
 
-  void __set_addr(const Addr val);
+  void __set_addr(const AbsAddr val);
 
   void __set_bytes(const std::string& val);
+
+  void __set_moduleinfo(const ModuleInfo& val);
 
   bool operator == (const CodeBlock & rhs) const
   {
     if (!(addr == rhs.addr))
       return false;
     if (!(bytes == rhs.bytes))
+      return false;
+    if (__isset.moduleinfo != rhs.__isset.moduleinfo)
+      return false;
+    else if (__isset.moduleinfo && !(moduleinfo == rhs.moduleinfo))
       return false;
     return true;
   }

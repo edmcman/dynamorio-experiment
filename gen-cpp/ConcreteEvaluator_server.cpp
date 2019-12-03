@@ -28,7 +28,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     assert_helper (!fastforward_params, "Only one breakpoint is supported and one already exists.");
 
-    auto addr = bp.addr;
+    auto addr = (uintptr_t) AbsOrRelAddr_to_AbsAddr (bp.addr);
     auto count = bp.count;
     fastforward_params = std::make_pair (addr, count);
     dr_printf("(%#Lx, %#Lx)\n", addr, count);
@@ -70,8 +70,20 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     size_t size = stopped_block->second - stopped_block->first;
 
-    _return.addr = (Addr) stopped_block->first;
+    _return.addr = (AbsAddr) stopped_block->first;
     _return.bytes = std::string (stopped_block->first, stopped_block->second); //.resize (size);
+    module_data_t *moddata = dr_lookup_module ((byte*) _return.addr);
+    if (moddata) {
+      ModuleInfo mi;
+      mi.base = (AbsAddr) moddata->start;
+
+      RelAddr ra;
+      ra.modulename = dr_module_preferred_name (moddata);
+      ra.offset = _return.addr - mi.base;
+      mi.addr = ra;
+      _return.__set_moduleinfo (mi);
+      dr_free_module_data (moddata);
+    }
   }
 
   void getContext(RegisterContext& _return) {
