@@ -33,6 +33,11 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     printf("getCodeBlock\n");
   }
 
+  void getContext(RegisterContext& _return) {
+    // Your implementation goes here
+    printf("getContext\n");
+  }
+
 };
 
 int main(int argc, char **argv) {

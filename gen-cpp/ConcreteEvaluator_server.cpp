@@ -58,7 +58,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     printf("Stop!\n");
 
-    assert_helper ((bool) stopped_context, "Internal error: unable to locate stopped context.");
+    assert_helper ((bool) stopped_context, "Unable to locate stopped context.");
     return stopped_context->first;
   }
 
@@ -72,9 +72,28 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
     _return.addr = (Addr) stopped_block->first;
     _return.bytes = std::string (stopped_block->first, stopped_block->second); //.resize (size);
-    //memmove (_return.bytes.data (), stopped_block->first, size);
   }
 
+  void getContext(RegisterContext& _return) {
+    // Your implementation goes here
+    printf("getContext\n");
+
+    assert_helper ((bool) stopped_context, "Unable to locate stopped context.");
+
+    dr_mcontext_t mc = stopped_context->second;
+
+    for (int i = DR_REG_START_GPR; i < DR_REG_STOP_GPR; i++) {
+      const char *name = get_register_name (i);
+      reg_t value = reg_get_value (i, &mc);
+      dr_printf ("%s = %#Lx\n", name, value);
+      std::string svalue ((char*) &value, (char*) (&value) + opnd_size_in_bytes (reg_get_size (i)));
+      _return [name] = svalue;
+    }
+
+    std::string svalue ((char*) &mc.flags, (char*) (&mc.flags + 1));
+    _return ["flags"] = svalue;
+
+  }
 
 };
 

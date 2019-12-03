@@ -38,6 +38,9 @@ service ConcreteEvaluator {
 
   CodeBlock getCodeBlock () throws (1: Exception exc)
 
+  // XXX: Specify or return thread id?
+  RegisterContext getContext () throws (1: Exception exc)
+
   /*
   void introduceTaintToMemory(1: Addr addr, 2: i32 numBytes = 1)
 
