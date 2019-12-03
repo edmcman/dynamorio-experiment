@@ -59,7 +59,18 @@ static app_pc AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a, bool unlock_mutex_
   else if (a.__isset.reladdr) {
     module_data_t *moddata = dr_lookup_module_by_name (a.reladdr.modulename.c_str ());
     assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str (), unlock_mutex_on_error);
-    app_pc r = moddata->start + a.reladdr.offset;
+
+    app_pc r;
+    if (a.reladdr.offset.__isset.offset)
+      r = moddata->start + a.reladdr.offset.offset;
+    else if (a.reladdr.offset.__isset.symbol) {
+      // get module handle
+      r = (app_pc) dr_get_proc_address (moddata->handle, a.reladdr.offset.symbol.c_str ());
+      assert_helper (r, (std::string ("Unable to locate symbol: ") + a.reladdr.offset.symbol + std::string (" in module: ") + a.reladdr.modulename).c_str (), unlock_mutex_on_error);
+    }
+    else
+      assert_helper (false, "Neither offset nor symbol set in OffsetOrSymbol", unlock_mutex_on_error);
+
     dr_free_module_data (moddata);
     return r;
   } else {

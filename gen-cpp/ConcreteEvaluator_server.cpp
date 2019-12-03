@@ -88,7 +88,9 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
       RelAddr ra;
       ra.modulename = dr_module_preferred_name (moddata);
-      ra.offset = _return.addr - mi.base;
+      OffsetOrSymbol offset;
+      offset.__set_offset (_return.addr - mi.base);
+      ra.offset = offset;
       mi.addr = ra;
       _return.__set_moduleinfo (mi);
       dr_free_module_data (moddata);

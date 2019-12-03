@@ -51,6 +51,122 @@ std::string to_string(const EventType::type& val) {
 }
 
 
+OffsetOrSymbol::~OffsetOrSymbol() noexcept {
+}
+
+
+void OffsetOrSymbol::__set_offset(const Offset val) {
+  this->offset = val;
+__isset.offset = true;
+}
+
+void OffsetOrSymbol::__set_symbol(const Symbol& val) {
+  this->symbol = val;
+__isset.symbol = true;
+}
+std::ostream& operator<<(std::ostream& out, const OffsetOrSymbol& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t OffsetOrSymbol::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->offset);
+          this->__isset.offset = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->symbol);
+          this->__isset.symbol = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t OffsetOrSymbol::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("OffsetOrSymbol");
+
+  if (this->__isset.offset) {
+    xfer += oprot->writeFieldBegin("offset", ::apache::thrift::protocol::T_I64, 1);
+    xfer += oprot->writeI64(this->offset);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.symbol) {
+    xfer += oprot->writeFieldBegin("symbol", ::apache::thrift::protocol::T_STRING, 2);
+    xfer += oprot->writeString(this->symbol);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(OffsetOrSymbol &a, OffsetOrSymbol &b) {
+  using ::std::swap;
+  swap(a.offset, b.offset);
+  swap(a.symbol, b.symbol);
+  swap(a.__isset, b.__isset);
+}
+
+OffsetOrSymbol::OffsetOrSymbol(const OffsetOrSymbol& other0) {
+  offset = other0.offset;
+  symbol = other0.symbol;
+  __isset = other0.__isset;
+}
+OffsetOrSymbol& OffsetOrSymbol::operator=(const OffsetOrSymbol& other1) {
+  offset = other1.offset;
+  symbol = other1.symbol;
+  __isset = other1.__isset;
+  return *this;
+}
+void OffsetOrSymbol::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "OffsetOrSymbol(";
+  out << "offset="; (__isset.offset ? (out << to_string(offset)) : (out << "<null>"));
+  out << ", " << "symbol="; (__isset.symbol ? (out << to_string(symbol)) : (out << "<null>"));
+  out << ")";
+}
+
+
 RelAddr::~RelAddr() noexcept {
 }
 
@@ -59,7 +175,7 @@ void RelAddr::__set_modulename(const std::string& val) {
   this->modulename = val;
 }
 
-void RelAddr::__set_offset(const Offset val) {
+void RelAddr::__set_offset(const OffsetOrSymbol& val) {
   this->offset = val;
 }
 std::ostream& operator<<(std::ostream& out, const RelAddr& obj)
@@ -99,8 +215,8 @@ uint32_t RelAddr::read(::apache::thrift::protocol::TProtocol* iprot) {
         }
         break;
       case 2:
-        if (ftype == ::apache::thrift::protocol::T_I64) {
-          xfer += iprot->readI64(this->offset);
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->offset.read(iprot);
           this->__isset.offset = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -127,8 +243,8 @@ uint32_t RelAddr::write(::apache::thrift::protocol::TProtocol* oprot) const {
   xfer += oprot->writeString(this->modulename);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("offset", ::apache::thrift::protocol::T_I64, 2);
-  xfer += oprot->writeI64(this->offset);
+  xfer += oprot->writeFieldBegin("offset", ::apache::thrift::protocol::T_STRUCT, 2);
+  xfer += this->offset.write(oprot);
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -143,15 +259,15 @@ void swap(RelAddr &a, RelAddr &b) {
   swap(a.__isset, b.__isset);
 }
 
-RelAddr::RelAddr(const RelAddr& other0) {
-  modulename = other0.modulename;
-  offset = other0.offset;
-  __isset = other0.__isset;
+RelAddr::RelAddr(const RelAddr& other2) {
+  modulename = other2.modulename;
+  offset = other2.offset;
+  __isset = other2.__isset;
 }
-RelAddr& RelAddr::operator=(const RelAddr& other1) {
-  modulename = other1.modulename;
-  offset = other1.offset;
-  __isset = other1.__isset;
+RelAddr& RelAddr::operator=(const RelAddr& other3) {
+  modulename = other3.modulename;
+  offset = other3.offset;
+  __isset = other3.__isset;
   return *this;
 }
 void RelAddr::printTo(std::ostream& out) const {
@@ -259,15 +375,15 @@ void swap(AbsOrRelAddr &a, AbsOrRelAddr &b) {
   swap(a.__isset, b.__isset);
 }
 
-AbsOrRelAddr::AbsOrRelAddr(const AbsOrRelAddr& other2) {
-  absaddr = other2.absaddr;
-  reladdr = other2.reladdr;
-  __isset = other2.__isset;
+AbsOrRelAddr::AbsOrRelAddr(const AbsOrRelAddr& other4) {
+  absaddr = other4.absaddr;
+  reladdr = other4.reladdr;
+  __isset = other4.__isset;
 }
-AbsOrRelAddr& AbsOrRelAddr::operator=(const AbsOrRelAddr& other3) {
-  absaddr = other3.absaddr;
-  reladdr = other3.reladdr;
-  __isset = other3.__isset;
+AbsOrRelAddr& AbsOrRelAddr::operator=(const AbsOrRelAddr& other5) {
+  absaddr = other5.absaddr;
+  reladdr = other5.reladdr;
+  __isset = other5.__isset;
   return *this;
 }
 void AbsOrRelAddr::printTo(std::ostream& out) const {
@@ -371,15 +487,15 @@ void swap(Breakpoint &a, Breakpoint &b) {
   swap(a.__isset, b.__isset);
 }
 
-Breakpoint::Breakpoint(const Breakpoint& other4) {
-  addr = other4.addr;
-  count = other4.count;
-  __isset = other4.__isset;
+Breakpoint::Breakpoint(const Breakpoint& other6) {
+  addr = other6.addr;
+  count = other6.count;
+  __isset = other6.__isset;
 }
-Breakpoint& Breakpoint::operator=(const Breakpoint& other5) {
-  addr = other5.addr;
-  count = other5.count;
-  __isset = other5.__isset;
+Breakpoint& Breakpoint::operator=(const Breakpoint& other7) {
+  addr = other7.addr;
+  count = other7.count;
+  __isset = other7.__isset;
   return *this;
 }
 void Breakpoint::printTo(std::ostream& out) const {
@@ -483,15 +599,15 @@ void swap(ModuleInfo &a, ModuleInfo &b) {
   swap(a.__isset, b.__isset);
 }
 
-ModuleInfo::ModuleInfo(const ModuleInfo& other6) {
-  addr = other6.addr;
-  base = other6.base;
-  __isset = other6.__isset;
+ModuleInfo::ModuleInfo(const ModuleInfo& other8) {
+  addr = other8.addr;
+  base = other8.base;
+  __isset = other8.__isset;
 }
-ModuleInfo& ModuleInfo::operator=(const ModuleInfo& other7) {
-  addr = other7.addr;
-  base = other7.base;
-  __isset = other7.__isset;
+ModuleInfo& ModuleInfo::operator=(const ModuleInfo& other9) {
+  addr = other9.addr;
+  base = other9.base;
+  __isset = other9.__isset;
   return *this;
 }
 void ModuleInfo::printTo(std::ostream& out) const {
@@ -614,17 +730,17 @@ void swap(CodeBlock &a, CodeBlock &b) {
   swap(a.__isset, b.__isset);
 }
 
-CodeBlock::CodeBlock(const CodeBlock& other8) {
-  addr = other8.addr;
-  bytes = other8.bytes;
-  moduleinfo = other8.moduleinfo;
-  __isset = other8.__isset;
+CodeBlock::CodeBlock(const CodeBlock& other10) {
+  addr = other10.addr;
+  bytes = other10.bytes;
+  moduleinfo = other10.moduleinfo;
+  __isset = other10.__isset;
 }
-CodeBlock& CodeBlock::operator=(const CodeBlock& other9) {
-  addr = other9.addr;
-  bytes = other9.bytes;
-  moduleinfo = other9.moduleinfo;
-  __isset = other9.__isset;
+CodeBlock& CodeBlock::operator=(const CodeBlock& other11) {
+  addr = other11.addr;
+  bytes = other11.bytes;
+  moduleinfo = other11.moduleinfo;
+  __isset = other11.__isset;
   return *this;
 }
 void CodeBlock::printTo(std::ostream& out) const {
@@ -712,13 +828,13 @@ void swap(Exception &a, Exception &b) {
   swap(a.__isset, b.__isset);
 }
 
-Exception::Exception(const Exception& other10) : TException() {
-  msg = other10.msg;
-  __isset = other10.__isset;
+Exception::Exception(const Exception& other12) : TException() {
+  msg = other12.msg;
+  __isset = other12.__isset;
 }
-Exception& Exception::operator=(const Exception& other11) {
-  msg = other11.msg;
-  __isset = other11.__isset;
+Exception& Exception::operator=(const Exception& other13) {
+  msg = other13.msg;
+  __isset = other13.__isset;
   return *this;
 }
 void Exception::printTo(std::ostream& out) const {

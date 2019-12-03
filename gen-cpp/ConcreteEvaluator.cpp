@@ -225,17 +225,17 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_SET) {
           {
             this->stopEvents.clear();
-            uint32_t _size12;
-            ::apache::thrift::protocol::TType _etype15;
-            xfer += iprot->readSetBegin(_etype15, _size12);
-            uint32_t _i16;
-            for (_i16 = 0; _i16 < _size12; ++_i16)
+            uint32_t _size14;
+            ::apache::thrift::protocol::TType _etype17;
+            xfer += iprot->readSetBegin(_etype17, _size14);
+            uint32_t _i18;
+            for (_i18 = 0; _i18 < _size14; ++_i18)
             {
-              EventType::type _elem17;
-              int32_t ecast18;
-              xfer += iprot->readI32(ecast18);
-              _elem17 = (EventType::type)ecast18;
-              this->stopEvents.insert(_elem17);
+              EventType::type _elem19;
+              int32_t ecast20;
+              xfer += iprot->readI32(ecast20);
+              _elem19 = (EventType::type)ecast20;
+              this->stopEvents.insert(_elem19);
             }
             xfer += iprot->readSetEnd();
           }
@@ -264,10 +264,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->stopEvents.size()));
-    std::set<EventType::type> ::const_iterator _iter19;
-    for (_iter19 = this->stopEvents.begin(); _iter19 != this->stopEvents.end(); ++_iter19)
+    std::set<EventType::type> ::const_iterator _iter21;
+    for (_iter21 = this->stopEvents.begin(); _iter21 != this->stopEvents.end(); ++_iter21)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter19));
+      xfer += oprot->writeI32((int32_t)(*_iter21));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -291,10 +291,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_pargs::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->stopEvents)).size()));
-    std::set<EventType::type> ::const_iterator _iter20;
-    for (_iter20 = (*(this->stopEvents)).begin(); _iter20 != (*(this->stopEvents)).end(); ++_iter20)
+    std::set<EventType::type> ::const_iterator _iter22;
+    for (_iter22 = (*(this->stopEvents)).begin(); _iter22 != (*(this->stopEvents)).end(); ++_iter22)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter20));
+      xfer += oprot->writeI32((int32_t)(*_iter22));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -333,9 +333,9 @@ uint32_t ConcreteEvaluator_executeUntilEvent_result::read(::apache::thrift::prot
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast21;
-          xfer += iprot->readI32(ecast21);
-          this->success = (EventType::type)ecast21;
+          int32_t ecast23;
+          xfer += iprot->readI32(ecast23);
+          this->success = (EventType::type)ecast23;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -397,9 +397,9 @@ uint32_t ConcreteEvaluator_executeUntilEvent_presult::read(::apache::thrift::pro
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast22;
-          xfer += iprot->readI32(ecast22);
-          (*(this->success)) = (EventType::type)ecast22;
+          int32_t ecast24;
+          xfer += iprot->readI32(ecast24);
+          (*(this->success)) = (EventType::type)ecast24;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -691,17 +691,17 @@ uint32_t ConcreteEvaluator_getContext_result::read(::apache::thrift::protocol::T
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->success.clear();
-            uint32_t _size23;
-            ::apache::thrift::protocol::TType _ktype24;
-            ::apache::thrift::protocol::TType _vtype25;
-            xfer += iprot->readMapBegin(_ktype24, _vtype25, _size23);
-            uint32_t _i27;
-            for (_i27 = 0; _i27 < _size23; ++_i27)
+            uint32_t _size25;
+            ::apache::thrift::protocol::TType _ktype26;
+            ::apache::thrift::protocol::TType _vtype27;
+            xfer += iprot->readMapBegin(_ktype26, _vtype27, _size25);
+            uint32_t _i29;
+            for (_i29 = 0; _i29 < _size25; ++_i29)
             {
-              RegisterID _key28;
-              xfer += iprot->readString(_key28);
-              RegisterValue& _val29 = this->success[_key28];
-              xfer += iprot->readBinary(_val29);
+              RegisterID _key30;
+              xfer += iprot->readString(_key30);
+              RegisterValue& _val31 = this->success[_key30];
+              xfer += iprot->readBinary(_val31);
             }
             xfer += iprot->readMapEnd();
           }
@@ -740,11 +740,11 @@ uint32_t ConcreteEvaluator_getContext_result::write(::apache::thrift::protocol::
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_MAP, 0);
     {
       xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
-      std::map<RegisterID, RegisterValue> ::const_iterator _iter30;
-      for (_iter30 = this->success.begin(); _iter30 != this->success.end(); ++_iter30)
+      std::map<RegisterID, RegisterValue> ::const_iterator _iter32;
+      for (_iter32 = this->success.begin(); _iter32 != this->success.end(); ++_iter32)
       {
-        xfer += oprot->writeString(_iter30->first);
-        xfer += oprot->writeBinary(_iter30->second);
+        xfer += oprot->writeString(_iter32->first);
+        xfer += oprot->writeBinary(_iter32->second);
       }
       xfer += oprot->writeMapEnd();
     }
@@ -789,17 +789,17 @@ uint32_t ConcreteEvaluator_getContext_presult::read(::apache::thrift::protocol::
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             (*(this->success)).clear();
-            uint32_t _size31;
-            ::apache::thrift::protocol::TType _ktype32;
-            ::apache::thrift::protocol::TType _vtype33;
-            xfer += iprot->readMapBegin(_ktype32, _vtype33, _size31);
-            uint32_t _i35;
-            for (_i35 = 0; _i35 < _size31; ++_i35)
+            uint32_t _size33;
+            ::apache::thrift::protocol::TType _ktype34;
+            ::apache::thrift::protocol::TType _vtype35;
+            xfer += iprot->readMapBegin(_ktype34, _vtype35, _size33);
+            uint32_t _i37;
+            for (_i37 = 0; _i37 < _size33; ++_i37)
             {
-              RegisterID _key36;
-              xfer += iprot->readString(_key36);
-              RegisterValue& _val37 = (*(this->success))[_key36];
-              xfer += iprot->readBinary(_val37);
+              RegisterID _key38;
+              xfer += iprot->readString(_key38);
+              RegisterValue& _val39 = (*(this->success))[_key38];
+              xfer += iprot->readBinary(_val39);
             }
             xfer += iprot->readMapEnd();
           }

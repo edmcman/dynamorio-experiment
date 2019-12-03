@@ -42,6 +42,8 @@ typedef std::string RegisterValue;
 
 typedef std::string RegisterID;
 
+typedef std::string Symbol;
+
 typedef std::map<RegisterID, RegisterValue>  RegisterContext;
 
 typedef int64_t AbsAddr;
@@ -49,6 +51,8 @@ typedef int64_t AbsAddr;
 typedef int64_t Offset;
 
 typedef std::set<EventType::type>  EventTypes;
+
+class OffsetOrSymbol;
 
 class RelAddr;
 
@@ -62,6 +66,58 @@ class CodeBlock;
 
 class Exception;
 
+typedef struct _OffsetOrSymbol__isset {
+  _OffsetOrSymbol__isset() : offset(false), symbol(false) {}
+  bool offset :1;
+  bool symbol :1;
+} _OffsetOrSymbol__isset;
+
+class OffsetOrSymbol : public virtual ::apache::thrift::TBase {
+ public:
+
+  OffsetOrSymbol(const OffsetOrSymbol&);
+  OffsetOrSymbol& operator=(const OffsetOrSymbol&);
+  OffsetOrSymbol() : offset(0), symbol() {
+  }
+
+  virtual ~OffsetOrSymbol() noexcept;
+  Offset offset;
+  Symbol symbol;
+
+  _OffsetOrSymbol__isset __isset;
+
+  void __set_offset(const Offset val);
+
+  void __set_symbol(const Symbol& val);
+
+  bool operator == (const OffsetOrSymbol & rhs) const
+  {
+    if (__isset.offset != rhs.__isset.offset)
+      return false;
+    else if (__isset.offset && !(offset == rhs.offset))
+      return false;
+    if (__isset.symbol != rhs.__isset.symbol)
+      return false;
+    else if (__isset.symbol && !(symbol == rhs.symbol))
+      return false;
+    return true;
+  }
+  bool operator != (const OffsetOrSymbol &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const OffsetOrSymbol & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(OffsetOrSymbol &a, OffsetOrSymbol &b);
+
+std::ostream& operator<<(std::ostream& out, const OffsetOrSymbol& obj);
+
 typedef struct _RelAddr__isset {
   _RelAddr__isset() : modulename(false), offset(false) {}
   bool modulename :1;
@@ -73,18 +129,18 @@ class RelAddr : public virtual ::apache::thrift::TBase {
 
   RelAddr(const RelAddr&);
   RelAddr& operator=(const RelAddr&);
-  RelAddr() : modulename(), offset(0) {
+  RelAddr() : modulename() {
   }
 
   virtual ~RelAddr() noexcept;
   std::string modulename;
-  Offset offset;
+  OffsetOrSymbol offset;
 
   _RelAddr__isset __isset;
 
   void __set_modulename(const std::string& val);
 
-  void __set_offset(const Offset val);
+  void __set_offset(const OffsetOrSymbol& val);
 
   bool operator == (const RelAddr & rhs) const
   {

@@ -1,20 +1,27 @@
 typedef binary RegisterValue
 typedef string RegisterID
+typedef string Symbol
 
 typedef map<RegisterID,RegisterValue> RegisterContext
 
 // Absolute address
 typedef i64 AbsAddr
 
+// Either a fixed offset or a symbol pointing inside a module. Exactly one must be set.
+struct OffsetOrSymbol {
+  1: optional Offset offset,
+  2: optional Symbol symbol
+}
+
 // Relative address inside a module
 struct RelAddr {
   1: string modulename,
-  2: Offset offset
+  2: OffsetOrSymbol offset
 }
 
 typedef i64 Offset
 
-// Absolute or relative address.  At least one must be set.
+// Absolute or relative address.  Exactly one must be set.
 struct AbsOrRelAddr {
   1: optional AbsAddr absaddr,
   2: optional RelAddr reladdr
