@@ -23,6 +23,8 @@ class ConcreteEvaluatorIf {
  public:
   virtual ~ConcreteEvaluatorIf() {}
   virtual void addBreakpoint(const Breakpoint& bp) = 0;
+  virtual void delBreakpoint(const Breakpoint& bp) = 0;
+  virtual void getBreakpoints(std::set<Breakpoint> & _return) = 0;
   virtual EventType::type executeUntilEvent(const EventTypes& stopEvents) = 0;
   virtual void getCodeBlock(CodeBlock& _return) = 0;
   virtual void getContext(RegisterContext& _return) = 0;
@@ -56,6 +58,12 @@ class ConcreteEvaluatorNull : virtual public ConcreteEvaluatorIf {
  public:
   virtual ~ConcreteEvaluatorNull() {}
   void addBreakpoint(const Breakpoint& /* bp */) {
+    return;
+  }
+  void delBreakpoint(const Breakpoint& /* bp */) {
+    return;
+  }
+  void getBreakpoints(std::set<Breakpoint> & /* _return */) {
     return;
   }
   EventType::type executeUntilEvent(const EventTypes& /* stopEvents */) {
@@ -169,6 +177,202 @@ class ConcreteEvaluator_addBreakpoint_presult {
   Exception exc;
 
   _ConcreteEvaluator_addBreakpoint_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _ConcreteEvaluator_delBreakpoint_args__isset {
+  _ConcreteEvaluator_delBreakpoint_args__isset() : bp(false) {}
+  bool bp :1;
+} _ConcreteEvaluator_delBreakpoint_args__isset;
+
+class ConcreteEvaluator_delBreakpoint_args {
+ public:
+
+  ConcreteEvaluator_delBreakpoint_args(const ConcreteEvaluator_delBreakpoint_args&);
+  ConcreteEvaluator_delBreakpoint_args& operator=(const ConcreteEvaluator_delBreakpoint_args&);
+  ConcreteEvaluator_delBreakpoint_args() {
+  }
+
+  virtual ~ConcreteEvaluator_delBreakpoint_args() noexcept;
+  Breakpoint bp;
+
+  _ConcreteEvaluator_delBreakpoint_args__isset __isset;
+
+  void __set_bp(const Breakpoint& val);
+
+  bool operator == (const ConcreteEvaluator_delBreakpoint_args & rhs) const
+  {
+    if (!(bp == rhs.bp))
+      return false;
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_delBreakpoint_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_delBreakpoint_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ConcreteEvaluator_delBreakpoint_pargs {
+ public:
+
+
+  virtual ~ConcreteEvaluator_delBreakpoint_pargs() noexcept;
+  const Breakpoint* bp;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_delBreakpoint_result__isset {
+  _ConcreteEvaluator_delBreakpoint_result__isset() : exc(false) {}
+  bool exc :1;
+} _ConcreteEvaluator_delBreakpoint_result__isset;
+
+class ConcreteEvaluator_delBreakpoint_result {
+ public:
+
+  ConcreteEvaluator_delBreakpoint_result(const ConcreteEvaluator_delBreakpoint_result&);
+  ConcreteEvaluator_delBreakpoint_result& operator=(const ConcreteEvaluator_delBreakpoint_result&);
+  ConcreteEvaluator_delBreakpoint_result() {
+  }
+
+  virtual ~ConcreteEvaluator_delBreakpoint_result() noexcept;
+  Exception exc;
+
+  _ConcreteEvaluator_delBreakpoint_result__isset __isset;
+
+  void __set_exc(const Exception& val);
+
+  bool operator == (const ConcreteEvaluator_delBreakpoint_result & rhs) const
+  {
+    if (!(exc == rhs.exc))
+      return false;
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_delBreakpoint_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_delBreakpoint_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_delBreakpoint_presult__isset {
+  _ConcreteEvaluator_delBreakpoint_presult__isset() : exc(false) {}
+  bool exc :1;
+} _ConcreteEvaluator_delBreakpoint_presult__isset;
+
+class ConcreteEvaluator_delBreakpoint_presult {
+ public:
+
+
+  virtual ~ConcreteEvaluator_delBreakpoint_presult() noexcept;
+  Exception exc;
+
+  _ConcreteEvaluator_delBreakpoint_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class ConcreteEvaluator_getBreakpoints_args {
+ public:
+
+  ConcreteEvaluator_getBreakpoints_args(const ConcreteEvaluator_getBreakpoints_args&);
+  ConcreteEvaluator_getBreakpoints_args& operator=(const ConcreteEvaluator_getBreakpoints_args&);
+  ConcreteEvaluator_getBreakpoints_args() {
+  }
+
+  virtual ~ConcreteEvaluator_getBreakpoints_args() noexcept;
+
+  bool operator == (const ConcreteEvaluator_getBreakpoints_args & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_getBreakpoints_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_getBreakpoints_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ConcreteEvaluator_getBreakpoints_pargs {
+ public:
+
+
+  virtual ~ConcreteEvaluator_getBreakpoints_pargs() noexcept;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_getBreakpoints_result__isset {
+  _ConcreteEvaluator_getBreakpoints_result__isset() : success(false) {}
+  bool success :1;
+} _ConcreteEvaluator_getBreakpoints_result__isset;
+
+class ConcreteEvaluator_getBreakpoints_result {
+ public:
+
+  ConcreteEvaluator_getBreakpoints_result(const ConcreteEvaluator_getBreakpoints_result&);
+  ConcreteEvaluator_getBreakpoints_result& operator=(const ConcreteEvaluator_getBreakpoints_result&);
+  ConcreteEvaluator_getBreakpoints_result() {
+  }
+
+  virtual ~ConcreteEvaluator_getBreakpoints_result() noexcept;
+  std::set<Breakpoint>  success;
+
+  _ConcreteEvaluator_getBreakpoints_result__isset __isset;
+
+  void __set_success(const std::set<Breakpoint> & val);
+
+  bool operator == (const ConcreteEvaluator_getBreakpoints_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const ConcreteEvaluator_getBreakpoints_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ConcreteEvaluator_getBreakpoints_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ConcreteEvaluator_getBreakpoints_presult__isset {
+  _ConcreteEvaluator_getBreakpoints_presult__isset() : success(false) {}
+  bool success :1;
+} _ConcreteEvaluator_getBreakpoints_presult__isset;
+
+class ConcreteEvaluator_getBreakpoints_presult {
+ public:
+
+
+  virtual ~ConcreteEvaluator_getBreakpoints_presult() noexcept;
+  std::set<Breakpoint> * success;
+
+  _ConcreteEvaluator_getBreakpoints_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -506,6 +710,12 @@ class ConcreteEvaluatorClient : virtual public ConcreteEvaluatorIf {
   void addBreakpoint(const Breakpoint& bp);
   void send_addBreakpoint(const Breakpoint& bp);
   void recv_addBreakpoint();
+  void delBreakpoint(const Breakpoint& bp);
+  void send_delBreakpoint(const Breakpoint& bp);
+  void recv_delBreakpoint();
+  void getBreakpoints(std::set<Breakpoint> & _return);
+  void send_getBreakpoints();
+  void recv_getBreakpoints(std::set<Breakpoint> & _return);
   EventType::type executeUntilEvent(const EventTypes& stopEvents);
   void send_executeUntilEvent(const EventTypes& stopEvents);
   EventType::type recv_executeUntilEvent();
@@ -531,6 +741,8 @@ class ConcreteEvaluatorProcessor : public ::apache::thrift::TDispatchProcessor {
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
   void process_addBreakpoint(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_delBreakpoint(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_getBreakpoints(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_executeUntilEvent(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getCodeBlock(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getContext(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -538,6 +750,8 @@ class ConcreteEvaluatorProcessor : public ::apache::thrift::TDispatchProcessor {
   ConcreteEvaluatorProcessor(::std::shared_ptr<ConcreteEvaluatorIf> iface) :
     iface_(iface) {
     processMap_["addBreakpoint"] = &ConcreteEvaluatorProcessor::process_addBreakpoint;
+    processMap_["delBreakpoint"] = &ConcreteEvaluatorProcessor::process_delBreakpoint;
+    processMap_["getBreakpoints"] = &ConcreteEvaluatorProcessor::process_getBreakpoints;
     processMap_["executeUntilEvent"] = &ConcreteEvaluatorProcessor::process_executeUntilEvent;
     processMap_["getCodeBlock"] = &ConcreteEvaluatorProcessor::process_getCodeBlock;
     processMap_["getContext"] = &ConcreteEvaluatorProcessor::process_getContext;
@@ -576,6 +790,25 @@ class ConcreteEvaluatorMultiface : virtual public ConcreteEvaluatorIf {
       ifaces_[i]->addBreakpoint(bp);
     }
     ifaces_[i]->addBreakpoint(bp);
+  }
+
+  void delBreakpoint(const Breakpoint& bp) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->delBreakpoint(bp);
+    }
+    ifaces_[i]->delBreakpoint(bp);
+  }
+
+  void getBreakpoints(std::set<Breakpoint> & _return) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->getBreakpoints(_return);
+    }
+    ifaces_[i]->getBreakpoints(_return);
+    return;
   }
 
   EventType::type executeUntilEvent(const EventTypes& stopEvents) {
@@ -642,6 +875,12 @@ class ConcreteEvaluatorConcurrentClient : virtual public ConcreteEvaluatorIf {
   void addBreakpoint(const Breakpoint& bp);
   int32_t send_addBreakpoint(const Breakpoint& bp);
   void recv_addBreakpoint(const int32_t seqid);
+  void delBreakpoint(const Breakpoint& bp);
+  int32_t send_delBreakpoint(const Breakpoint& bp);
+  void recv_delBreakpoint(const int32_t seqid);
+  void getBreakpoints(std::set<Breakpoint> & _return);
+  int32_t send_getBreakpoints();
+  void recv_getBreakpoints(std::set<Breakpoint> & _return, const int32_t seqid);
   EventType::type executeUntilEvent(const EventTypes& stopEvents);
   int32_t send_executeUntilEvent(const EventTypes& stopEvents);
   EventType::type recv_executeUntilEvent(const int32_t seqid);

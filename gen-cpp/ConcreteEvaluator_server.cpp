@@ -26,16 +26,45 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     // Your implementation goes here
     printf("addBreakpoint\n");
 
-    auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, true);
+    auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
 
     dr_mutex_lock (*mutex);
-    assert_helper (fastforward_params.count (addr) == 0 || fastforward_params[addr] == 0, "Breakpoint already exists and is non-zero", true);
+    assert_helper (fastforward_params.count (addr) == 0 || fastforward_params[addr] == 0, "Breakpoint already exists", true);
 
     auto count = bp.count;
     fastforward_params [addr] = count;
     dr_mutex_unlock (*mutex);
 
     dr_printf("(%#Lx, %#Lx)\n", addr, count);
+  }
+
+  void delBreakpoint(const Breakpoint& bp) {
+    // Your implementation goes here
+    printf("delBreakpoint\n");
+
+    auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
+
+    dr_mutex_lock (*mutex);
+    assert_helper (fastforward_params.count (addr), "Breakpoint not found", true);
+    fastforward_params.erase (addr);
+    total_flush ();
+    dr_mutex_unlock (*mutex);
+  }
+
+  void getBreakpoints(std::set<Breakpoint> & _return) {
+    // Your implementation goes here
+    printf("getBreakpoints\n");
+
+    dr_mutex_lock (*mutex);
+    for (const auto &p : fastforward_params) {
+      Breakpoint bp;
+      AbsOrRelAddr a;
+      a.__set_absaddr ((AbsAddr) p.first);
+      bp.addr = a;
+      bp.count = p.second;
+      _return.insert (bp);
+    }
+    dr_mutex_unlock (*mutex);
   }
 
   EventType::type executeUntilEvent(const EventTypes& stopEvents) {

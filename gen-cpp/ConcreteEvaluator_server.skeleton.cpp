@@ -23,6 +23,16 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     printf("addBreakpoint\n");
   }
 
+  void delBreakpoint(const Breakpoint& bp) {
+    // Your implementation goes here
+    printf("delBreakpoint\n");
+  }
+
+  void getBreakpoints(std::set<Breakpoint> & _return) {
+    // Your implementation goes here
+    printf("getBreakpoints\n");
+  }
+
   EventType::type executeUntilEvent(const EventTypes& stopEvents) {
     // Your implementation goes here
     printf("executeUntilEvent\n");

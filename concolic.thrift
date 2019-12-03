@@ -62,6 +62,11 @@ service ConcreteEvaluator {
 
   void addBreakpoint (1: Breakpoint bp) throws (1: Exception exc)
 
+  // Note: The count of the breakpoint is ignored.
+  void delBreakpoint (1: Breakpoint bp) throws (1: Exception exc)
+
+  set<Breakpoint> getBreakpoints ()
+
   EventType executeUntilEvent(1: EventTypes stopEvents)
 
   CodeBlock getCodeBlock () throws (1: Exception exc)

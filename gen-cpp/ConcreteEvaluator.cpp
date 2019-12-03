@@ -196,6 +196,393 @@ uint32_t ConcreteEvaluator_addBreakpoint_presult::read(::apache::thrift::protoco
 }
 
 
+ConcreteEvaluator_delBreakpoint_args::~ConcreteEvaluator_delBreakpoint_args() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_delBreakpoint_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->bp.read(iprot);
+          this->__isset.bp = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_delBreakpoint_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_delBreakpoint_args");
+
+  xfer += oprot->writeFieldBegin("bp", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->bp.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_delBreakpoint_pargs::~ConcreteEvaluator_delBreakpoint_pargs() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_delBreakpoint_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_delBreakpoint_pargs");
+
+  xfer += oprot->writeFieldBegin("bp", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->bp)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_delBreakpoint_result::~ConcreteEvaluator_delBreakpoint_result() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_delBreakpoint_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->exc.read(iprot);
+          this->__isset.exc = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_delBreakpoint_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_delBreakpoint_result");
+
+  if (this->__isset.exc) {
+    xfer += oprot->writeFieldBegin("exc", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->exc.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_delBreakpoint_presult::~ConcreteEvaluator_delBreakpoint_presult() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_delBreakpoint_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->exc.read(iprot);
+          this->__isset.exc = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ConcreteEvaluator_getBreakpoints_args::~ConcreteEvaluator_getBreakpoints_args() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getBreakpoints_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_getBreakpoints_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getBreakpoints_args");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getBreakpoints_pargs::~ConcreteEvaluator_getBreakpoints_pargs() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getBreakpoints_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getBreakpoints_pargs");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getBreakpoints_result::~ConcreteEvaluator_getBreakpoints_result() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getBreakpoints_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_SET) {
+          {
+            this->success.clear();
+            uint32_t _size14;
+            ::apache::thrift::protocol::TType _etype17;
+            xfer += iprot->readSetBegin(_etype17, _size14);
+            uint32_t _i18;
+            for (_i18 = 0; _i18 < _size14; ++_i18)
+            {
+              Breakpoint _elem19;
+              xfer += _elem19.read(iprot);
+              this->success.insert(_elem19);
+            }
+            xfer += iprot->readSetEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ConcreteEvaluator_getBreakpoints_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ConcreteEvaluator_getBreakpoints_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_SET, 0);
+    {
+      xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+      std::set<Breakpoint> ::const_iterator _iter20;
+      for (_iter20 = this->success.begin(); _iter20 != this->success.end(); ++_iter20)
+      {
+        xfer += (*_iter20).write(oprot);
+      }
+      xfer += oprot->writeSetEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ConcreteEvaluator_getBreakpoints_presult::~ConcreteEvaluator_getBreakpoints_presult() noexcept {
+}
+
+
+uint32_t ConcreteEvaluator_getBreakpoints_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_SET) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size21;
+            ::apache::thrift::protocol::TType _etype24;
+            xfer += iprot->readSetBegin(_etype24, _size21);
+            uint32_t _i25;
+            for (_i25 = 0; _i25 < _size21; ++_i25)
+            {
+              Breakpoint _elem26;
+              xfer += _elem26.read(iprot);
+              (*(this->success)).insert(_elem26);
+            }
+            xfer += iprot->readSetEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
 ConcreteEvaluator_executeUntilEvent_args::~ConcreteEvaluator_executeUntilEvent_args() noexcept {
 }
 
@@ -225,17 +612,17 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_SET) {
           {
             this->stopEvents.clear();
-            uint32_t _size14;
-            ::apache::thrift::protocol::TType _etype17;
-            xfer += iprot->readSetBegin(_etype17, _size14);
-            uint32_t _i18;
-            for (_i18 = 0; _i18 < _size14; ++_i18)
+            uint32_t _size27;
+            ::apache::thrift::protocol::TType _etype30;
+            xfer += iprot->readSetBegin(_etype30, _size27);
+            uint32_t _i31;
+            for (_i31 = 0; _i31 < _size27; ++_i31)
             {
-              EventType::type _elem19;
-              int32_t ecast20;
-              xfer += iprot->readI32(ecast20);
-              _elem19 = (EventType::type)ecast20;
-              this->stopEvents.insert(_elem19);
+              EventType::type _elem32;
+              int32_t ecast33;
+              xfer += iprot->readI32(ecast33);
+              _elem32 = (EventType::type)ecast33;
+              this->stopEvents.insert(_elem32);
             }
             xfer += iprot->readSetEnd();
           }
@@ -264,10 +651,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_args::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->stopEvents.size()));
-    std::set<EventType::type> ::const_iterator _iter21;
-    for (_iter21 = this->stopEvents.begin(); _iter21 != this->stopEvents.end(); ++_iter21)
+    std::set<EventType::type> ::const_iterator _iter34;
+    for (_iter34 = this->stopEvents.begin(); _iter34 != this->stopEvents.end(); ++_iter34)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter21));
+      xfer += oprot->writeI32((int32_t)(*_iter34));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -291,10 +678,10 @@ uint32_t ConcreteEvaluator_executeUntilEvent_pargs::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("stopEvents", ::apache::thrift::protocol::T_SET, 1);
   {
     xfer += oprot->writeSetBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>((*(this->stopEvents)).size()));
-    std::set<EventType::type> ::const_iterator _iter22;
-    for (_iter22 = (*(this->stopEvents)).begin(); _iter22 != (*(this->stopEvents)).end(); ++_iter22)
+    std::set<EventType::type> ::const_iterator _iter35;
+    for (_iter35 = (*(this->stopEvents)).begin(); _iter35 != (*(this->stopEvents)).end(); ++_iter35)
     {
-      xfer += oprot->writeI32((int32_t)(*_iter22));
+      xfer += oprot->writeI32((int32_t)(*_iter35));
     }
     xfer += oprot->writeSetEnd();
   }
@@ -333,9 +720,9 @@ uint32_t ConcreteEvaluator_executeUntilEvent_result::read(::apache::thrift::prot
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast23;
-          xfer += iprot->readI32(ecast23);
-          this->success = (EventType::type)ecast23;
+          int32_t ecast36;
+          xfer += iprot->readI32(ecast36);
+          this->success = (EventType::type)ecast36;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -397,9 +784,9 @@ uint32_t ConcreteEvaluator_executeUntilEvent_presult::read(::apache::thrift::pro
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast24;
-          xfer += iprot->readI32(ecast24);
-          (*(this->success)) = (EventType::type)ecast24;
+          int32_t ecast37;
+          xfer += iprot->readI32(ecast37);
+          (*(this->success)) = (EventType::type)ecast37;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -691,17 +1078,17 @@ uint32_t ConcreteEvaluator_getContext_result::read(::apache::thrift::protocol::T
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->success.clear();
-            uint32_t _size25;
-            ::apache::thrift::protocol::TType _ktype26;
-            ::apache::thrift::protocol::TType _vtype27;
-            xfer += iprot->readMapBegin(_ktype26, _vtype27, _size25);
-            uint32_t _i29;
-            for (_i29 = 0; _i29 < _size25; ++_i29)
+            uint32_t _size38;
+            ::apache::thrift::protocol::TType _ktype39;
+            ::apache::thrift::protocol::TType _vtype40;
+            xfer += iprot->readMapBegin(_ktype39, _vtype40, _size38);
+            uint32_t _i42;
+            for (_i42 = 0; _i42 < _size38; ++_i42)
             {
-              RegisterID _key30;
-              xfer += iprot->readString(_key30);
-              RegisterValue& _val31 = this->success[_key30];
-              xfer += iprot->readBinary(_val31);
+              RegisterID _key43;
+              xfer += iprot->readString(_key43);
+              RegisterValue& _val44 = this->success[_key43];
+              xfer += iprot->readBinary(_val44);
             }
             xfer += iprot->readMapEnd();
           }
@@ -740,11 +1127,11 @@ uint32_t ConcreteEvaluator_getContext_result::write(::apache::thrift::protocol::
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_MAP, 0);
     {
       xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
-      std::map<RegisterID, RegisterValue> ::const_iterator _iter32;
-      for (_iter32 = this->success.begin(); _iter32 != this->success.end(); ++_iter32)
+      std::map<RegisterID, RegisterValue> ::const_iterator _iter45;
+      for (_iter45 = this->success.begin(); _iter45 != this->success.end(); ++_iter45)
       {
-        xfer += oprot->writeString(_iter32->first);
-        xfer += oprot->writeBinary(_iter32->second);
+        xfer += oprot->writeString(_iter45->first);
+        xfer += oprot->writeBinary(_iter45->second);
       }
       xfer += oprot->writeMapEnd();
     }
@@ -789,17 +1176,17 @@ uint32_t ConcreteEvaluator_getContext_presult::read(::apache::thrift::protocol::
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             (*(this->success)).clear();
-            uint32_t _size33;
-            ::apache::thrift::protocol::TType _ktype34;
-            ::apache::thrift::protocol::TType _vtype35;
-            xfer += iprot->readMapBegin(_ktype34, _vtype35, _size33);
-            uint32_t _i37;
-            for (_i37 = 0; _i37 < _size33; ++_i37)
+            uint32_t _size46;
+            ::apache::thrift::protocol::TType _ktype47;
+            ::apache::thrift::protocol::TType _vtype48;
+            xfer += iprot->readMapBegin(_ktype47, _vtype48, _size46);
+            uint32_t _i50;
+            for (_i50 = 0; _i50 < _size46; ++_i50)
             {
-              RegisterID _key38;
-              xfer += iprot->readString(_key38);
-              RegisterValue& _val39 = (*(this->success))[_key38];
-              xfer += iprot->readBinary(_val39);
+              RegisterID _key51;
+              xfer += iprot->readString(_key51);
+              RegisterValue& _val52 = (*(this->success))[_key51];
+              xfer += iprot->readBinary(_val52);
             }
             xfer += iprot->readMapEnd();
           }
@@ -882,6 +1269,119 @@ void ConcreteEvaluatorClient::recv_addBreakpoint()
     throw result.exc;
   }
   return;
+}
+
+void ConcreteEvaluatorClient::delBreakpoint(const Breakpoint& bp)
+{
+  send_delBreakpoint(bp);
+  recv_delBreakpoint();
+}
+
+void ConcreteEvaluatorClient::send_delBreakpoint(const Breakpoint& bp)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("delBreakpoint", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_delBreakpoint_pargs args;
+  args.bp = &bp;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ConcreteEvaluatorClient::recv_delBreakpoint()
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("delBreakpoint") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ConcreteEvaluator_delBreakpoint_presult result;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.exc) {
+    throw result.exc;
+  }
+  return;
+}
+
+void ConcreteEvaluatorClient::getBreakpoints(std::set<Breakpoint> & _return)
+{
+  send_getBreakpoints();
+  recv_getBreakpoints(_return);
+}
+
+void ConcreteEvaluatorClient::send_getBreakpoints()
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("getBreakpoints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_getBreakpoints_pargs args;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ConcreteEvaluatorClient::recv_getBreakpoints(std::set<Breakpoint> & _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("getBreakpoints") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ConcreteEvaluator_getBreakpoints_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getBreakpoints failed: unknown result");
 }
 
 EventType::type ConcreteEvaluatorClient::executeUntilEvent(const EventTypes& stopEvents)
@@ -1137,6 +1637,116 @@ void ConcreteEvaluatorProcessor::process_addBreakpoint(int32_t seqid, ::apache::
   }
 }
 
+void ConcreteEvaluatorProcessor::process_delBreakpoint(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ConcreteEvaluator.delBreakpoint", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ConcreteEvaluator.delBreakpoint");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ConcreteEvaluator.delBreakpoint");
+  }
+
+  ConcreteEvaluator_delBreakpoint_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ConcreteEvaluator.delBreakpoint", bytes);
+  }
+
+  ConcreteEvaluator_delBreakpoint_result result;
+  try {
+    iface_->delBreakpoint(args.bp);
+  } catch (Exception &exc) {
+    result.exc = exc;
+    result.__isset.exc = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ConcreteEvaluator.delBreakpoint");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("delBreakpoint", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ConcreteEvaluator.delBreakpoint");
+  }
+
+  oprot->writeMessageBegin("delBreakpoint", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ConcreteEvaluator.delBreakpoint", bytes);
+  }
+}
+
+void ConcreteEvaluatorProcessor::process_getBreakpoints(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ConcreteEvaluator.getBreakpoints", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ConcreteEvaluator.getBreakpoints");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ConcreteEvaluator.getBreakpoints");
+  }
+
+  ConcreteEvaluator_getBreakpoints_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ConcreteEvaluator.getBreakpoints", bytes);
+  }
+
+  ConcreteEvaluator_getBreakpoints_result result;
+  try {
+    iface_->getBreakpoints(result.success);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ConcreteEvaluator.getBreakpoints");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("getBreakpoints", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ConcreteEvaluator.getBreakpoints");
+  }
+
+  oprot->writeMessageBegin("getBreakpoints", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ConcreteEvaluator.getBreakpoints", bytes);
+  }
+}
+
 void ConcreteEvaluatorProcessor::process_executeUntilEvent(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
 {
   void* ctx = NULL;
@@ -1385,6 +1995,171 @@ void ConcreteEvaluatorConcurrentClient::recv_addBreakpoint(const int32_t seqid)
       }
       sentry.commit();
       return;
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+void ConcreteEvaluatorConcurrentClient::delBreakpoint(const Breakpoint& bp)
+{
+  int32_t seqid = send_delBreakpoint(bp);
+  recv_delBreakpoint(seqid);
+}
+
+int32_t ConcreteEvaluatorConcurrentClient::send_delBreakpoint(const Breakpoint& bp)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  oprot_->writeMessageBegin("delBreakpoint", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_delBreakpoint_pargs args;
+  args.bp = &bp;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ConcreteEvaluatorConcurrentClient::recv_delBreakpoint(const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("delBreakpoint") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ConcreteEvaluator_delBreakpoint_presult result;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.exc) {
+        sentry.commit();
+        throw result.exc;
+      }
+      sentry.commit();
+      return;
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+void ConcreteEvaluatorConcurrentClient::getBreakpoints(std::set<Breakpoint> & _return)
+{
+  int32_t seqid = send_getBreakpoints();
+  recv_getBreakpoints(_return, seqid);
+}
+
+int32_t ConcreteEvaluatorConcurrentClient::send_getBreakpoints()
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  oprot_->writeMessageBegin("getBreakpoints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ConcreteEvaluator_getBreakpoints_pargs args;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ConcreteEvaluatorConcurrentClient::recv_getBreakpoints(std::set<Breakpoint> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("getBreakpoints") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ConcreteEvaluator_getBreakpoints_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getBreakpoints failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);
