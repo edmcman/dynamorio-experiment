@@ -61,6 +61,9 @@ static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating);
 
+static void
+event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded);
+
 // void suspender_thread (void *) {
 //   dr_printf ("Suspender thread\n");
 //   dr_client_thread_set_suspendable (false);
@@ -100,6 +103,7 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
 
   /* register events */
   dr_register_bb_event (event_basic_block);
+  dr_register_module_load_event (event_module_loaded);
 }
 
 static void clean_call (void* addr) {
@@ -150,6 +154,44 @@ static void relevant_block_clean_call (app_pc start, app_pc end) {
   }
 }
 
+static void
+event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded)
+{
+  //dr_printf ("WTF! %p\n", modinfo);
+  //DR_ASSERT_MSG (loaded, "loaded should always be true according to DR docs");
+
+  //auto a = modinfo->names.module_name;
+  //auto b = modinfo->names.file_name;
+  //dr_printf ("WT2F! %p\n", a);
+  //dr_printf ("WT2F! %p\n", b);
+  //dr_printf ("%s\n", a);
+  // dr_printf ("%s\n", b);
+  //printf ("what is going on\n");
+  const char* name = dr_module_preferred_name (modinfo);
+  //dr_printf ("Hmm %p\n", name);
+  //dr_printf ("WTF3! %p\n", modinfo);
+
+  //return;
+
+  dr_mutex_lock (*mutex);
+  // Are there any deferred breakpoints in this module that we can activate?
+  for (const auto &p : deferred_breakpoints) {
+    if (p.first.modulename == name) {
+      AbsOrRelAddr a;
+      a.__set_reladdr (p.first);
+      auto addr = AbsOrRelAddr_to_AbsAddr (a, true);
+      DR_ASSERT_MSG (addr, "Internal error: expected to resolve address");
+      DR_ASSERT_MSG (*addr >= modinfo->start && *addr <= modinfo->end, "Deferred breakpoint offset was invalid");
+
+      //dr_printf("WHAT\n");
+      
+      breakpoints [*addr] = p.second;
+      deferred_breakpoints.erase (p.first);
+    }
+  }
+  dr_mutex_unlock (*mutex);
+}
+
 static dr_emit_flags_t
 event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
                    bool for_trace, bool translating)
@@ -161,7 +203,8 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
   app_pc lastpc = instr_get_app_pc (last) + instr_length (drcontext, last);
 
   dr_mutex_lock (*mutex);
-  
+
+  // Absolute breakpoints
   if (std::any_of (breakpoints.begin (),
                    breakpoints.end (),
                    [&] (const auto &p) { return firstpc <= p.first && p.first <= lastpc; })) {
@@ -173,6 +216,28 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
       }
     }
   }
+
+  // Relative breakpoints
+  // module_data_t* mod = dr_lookup_module (firstpc);
+  // if (mod) {
+  //   std::string modname = dr_module_preferred_name (mod);
+
+  //   if (std::any_of (deferred_breakpoints.begin (),
+  //                  deferred_breakpoints.end (),
+  //                  [&] (const auto &p) {
+  //                      p.first.modulename == modname &&
+  //                        firstpc <= mod->end &&
+  //                        lastpc >= mod->start
+  //                  })) {
+  //     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
+  //       app_pc offset = instr_get_app_pc (instr) - mod->start;
+  //       if (breakpoints.count (instr_get_app_pc (instr))) {
+  //         dr_printf("Found one...\n");
+  //         dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 3, OPND_CREATE_INTPTR (instr_get_app_pc (instr)), OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
+  //       }
+  //     }
+  //   }
+  // }
 
   if (stop_events->count (EventType::RelevantBlock)) {
     instr_t *instr = instrlist_first (bb);

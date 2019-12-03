@@ -7,6 +7,7 @@
 
 extern std::optional<void*> mutex;
 
+extern std::map<RelAddr, size_t> deferred_breakpoints;
 extern std::map<app_pc, size_t> breakpoints;
 
 // Set whenever threads are suspended

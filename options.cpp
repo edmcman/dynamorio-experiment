@@ -2,6 +2,7 @@
 
 std::optional<void*> mutex;
 
+std::map<RelAddr, size_t> deferred_breakpoints;
 std::map<app_pc, size_t> breakpoints;
 
 std::optional<std::pair <void**, uint>> suspend_params;

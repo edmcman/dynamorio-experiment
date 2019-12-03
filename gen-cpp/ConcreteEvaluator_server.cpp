@@ -29,13 +29,24 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
 
     dr_mutex_lock (*mutex);
-    assert_helper (breakpoints.count (addr) == 0 || breakpoints[addr] == 0, "Breakpoint already exists", true);
+    // We were able to resolve the address now
+    if (addr) {
+      assert_helper (breakpoints.count (*addr) == 0 || breakpoints[*addr] == 0, "Breakpoint already exists", true);
 
-    auto count = bp.count;
-    breakpoints [addr] = count;
+      breakpoints [*addr] = bp.count;
+    } else {
+      // We were unable to resolve the address
+      assert_helper (bp.addr.__isset.reladdr, "Internal error: Expected a relative address", true);
+
+      RelAddr ra = bp.addr.reladdr;
+
+      dr_printf ("what\n");
+      assert_helper (deferred_breakpoints.count (ra) == 0, "Breakpoint already exists", true);
+      dr_printf ("what2\n");
+      deferred_breakpoints [ra] = bp.count;
+    }
     dr_mutex_unlock (*mutex);
 
-    dr_printf("(%#Lx, %#Lx)\n", addr, count);
   }
 
   void delBreakpoint(const Breakpoint& bp) {
@@ -45,9 +56,22 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
 
     dr_mutex_lock (*mutex);
-    assert_helper (breakpoints.count (addr), "Breakpoint not found", true);
-    breakpoints.erase (addr);
-    total_flush ();
+    if (addr) {
+      assert_helper (breakpoints.count (*addr), "Breakpoint not found", true);
+      breakpoints.erase (*addr);
+      total_flush ();
+    } else {
+      // We were unable to resolve the address
+      assert_helper (bp.addr.__isset.reladdr, "Internal error: Expected a relative address", true);
+
+      RelAddr ra = bp.addr.reladdr;
+
+      assert_helper (deferred_breakpoints.count (ra), "Breakpoint not found", true);
+      deferred_breakpoints.erase (ra);
+      // There is no reason to flush for a deferred breakpoint because
+      // we haven't instrumented anything yet!
+    }
+
     dr_mutex_unlock (*mutex);
   }
 

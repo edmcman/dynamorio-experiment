@@ -53,12 +53,13 @@ static void assert_helper (bool b, std::string msg, bool unlock_mutex_on_error) 
   }
 }
 
-static app_pc AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a, bool unlock_mutex_on_error) {
+static std::optional<app_pc> AbsOrRelAddr_to_AbsAddr (const AbsOrRelAddr &a, bool unlock_mutex_on_error) {
   if (a.__isset.absaddr)
     return (app_pc) a.absaddr;
   else if (a.__isset.reladdr) {
     module_data_t *moddata = dr_lookup_module_by_name (a.reladdr.modulename.c_str ());
-    assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str (), unlock_mutex_on_error);
+    //assert_helper (moddata, (std::string ("Unable to locate module: ") + a.reladdr.modulename).c_str (), unlock_mutex_on_error);
+    if (!moddata) return std::nullopt;
 
     app_pc r;
     if (a.reladdr.offset.__isset.offset)
