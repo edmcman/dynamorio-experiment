@@ -116,12 +116,12 @@ static void update_fastforward_count (app_pc addr, app_pc start, app_pc end) {
   bool stale = false;
 
   dr_mutex_lock (*mutex);
-  if (fastforward_params.count (addr)) {
-    auto new_count = --fastforward_params.at (addr);
-    fastforward_params.at (addr) = new_count;
+  if (breakpoints.count (addr)) {
+    auto new_count = --breakpoints.at (addr);
+    breakpoints.at (addr) = new_count;
 
     if (new_count == 0) {
-      fastforward_params.erase (addr);
+      breakpoints.erase (addr);
       dr_printf ("Done fast forwarding!\n");
 
       if (stop_events->count (EventType::Breakpoint)) {
@@ -162,12 +162,12 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
 
   dr_mutex_lock (*mutex);
   
-  if (std::any_of (fastforward_params.begin (),
-                   fastforward_params.end (),
+  if (std::any_of (breakpoints.begin (),
+                   breakpoints.end (),
                    [&] (const auto &p) { return firstpc <= p.first && p.first <= lastpc; })) {
     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
 
-      if (fastforward_params.count (instr_get_app_pc (instr))) {
+      if (breakpoints.count (instr_get_app_pc (instr))) {
         dr_printf("Found one...\n");
         dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 3, OPND_CREATE_INTPTR (instr_get_app_pc (instr)), OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
       }

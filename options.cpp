@@ -2,7 +2,7 @@
 
 std::optional<void*> mutex;
 
-std::map<app_pc, size_t> fastforward_params;
+std::map<app_pc, size_t> breakpoints;
 
 std::optional<std::pair <void**, uint>> suspend_params;
 

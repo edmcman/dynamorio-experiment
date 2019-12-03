@@ -29,10 +29,10 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
 
     dr_mutex_lock (*mutex);
-    assert_helper (fastforward_params.count (addr) == 0 || fastforward_params[addr] == 0, "Breakpoint already exists", true);
+    assert_helper (breakpoints.count (addr) == 0 || breakpoints[addr] == 0, "Breakpoint already exists", true);
 
     auto count = bp.count;
-    fastforward_params [addr] = count;
+    breakpoints [addr] = count;
     dr_mutex_unlock (*mutex);
 
     dr_printf("(%#Lx, %#Lx)\n", addr, count);
@@ -45,8 +45,8 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     auto addr = AbsOrRelAddr_to_AbsAddr (bp.addr, false);
 
     dr_mutex_lock (*mutex);
-    assert_helper (fastforward_params.count (addr), "Breakpoint not found", true);
-    fastforward_params.erase (addr);
+    assert_helper (breakpoints.count (addr), "Breakpoint not found", true);
+    breakpoints.erase (addr);
     total_flush ();
     dr_mutex_unlock (*mutex);
   }
@@ -56,7 +56,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     printf("getBreakpoints\n");
 
     dr_mutex_lock (*mutex);
-    for (const auto &p : fastforward_params) {
+    for (const auto &p : breakpoints) {
       Breakpoint bp;
       AbsOrRelAddr a;
       a.__set_absaddr ((AbsAddr) p.first);
