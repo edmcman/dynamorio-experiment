@@ -67,6 +67,9 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
 static void
 event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded);
 
+static void
+event_exit ();
+
 DR_EXPORT void
 dr_client_main(client_id_t id, int argc, const char *argv[])
 {
@@ -94,6 +97,7 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
   /* register events */
   dr_register_bb_event (event_basic_block);
   dr_register_module_load_event (event_module_loaded);
+  dr_register_exit_event (event_exit);
 }
 
 static void clean_call (void* addr) {
@@ -141,6 +145,13 @@ static void relevant_block_clean_call (app_pc start, app_pc end) {
   } else {
     dr_printf("Ignoring stale instrumentation\n");
   }
+}
+
+static void
+event_exit ()
+{
+  // Immediately exit
+  exit (0);
 }
 
 static void
@@ -200,28 +211,6 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
       }
     }
   }
-
-  // Relative breakpoints
-  // module_data_t* mod = dr_lookup_module (firstpc);
-  // if (mod) {
-  //   std::string modname = dr_module_preferred_name (mod);
-
-  //   if (std::any_of (deferred_breakpoints.begin (),
-  //                  deferred_breakpoints.end (),
-  //                  [&] (const auto &p) {
-  //                      p.first.modulename == modname &&
-  //                        firstpc <= mod->end &&
-  //                        lastpc >= mod->start
-  //                  })) {
-  //     for (instr_t *instr = instrlist_first(bb); instr != NULL; instr = instr_get_next(instr)) {
-  //       app_pc offset = instr_get_app_pc (instr) - mod->start;
-  //       if (breakpoints.count (instr_get_app_pc (instr))) {
-  //         dr_printf("Found one...\n");
-  //         dr_insert_clean_call (drcontext, bb, instr, (void*) update_fastforward_count, false, 3, OPND_CREATE_INTPTR (instr_get_app_pc (instr)), OPND_CREATE_INTPTR (firstpc), OPND_CREATE_INTPTR (lastpc));
-  //       }
-  //     }
-  //   }
-  // }
 
   if (stop_events->count (EventType::RelevantBlock)) {
     instr_t *instr = instrlist_first (bb);
