@@ -40,9 +40,7 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
 
       RelAddr ra = bp.addr.reladdr;
 
-      dr_printf ("what\n");
       assert_helper (deferred_breakpoints.count (ra) == 0, "Breakpoint already exists", true);
-      dr_printf ("what2\n");
       deferred_breakpoints [ra] = bp.count;
     }
     dr_mutex_unlock (*mutex);
@@ -100,11 +98,13 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     dr_mutex_lock (*mutex);
     assert_helper ((bool) suspend_params, "Execution is not currently suspended.", true);
 
+    // We must release the mutex before calling
+    // resume_application_threads or DR complains about deadlocks
+    dr_mutex_unlock (*mutex);
+
     total_flush ();
 
     resume_application_threads ();
-
-    dr_mutex_unlock (*mutex);
 
     // Block until we stop. The caller will obtain the mutex.
     dr_event_wait (*suspend_event);
@@ -115,7 +115,6 @@ class ConcreteEvaluatorHandler : virtual public ConcreteEvaluatorIf {
     printf("Stop!\n");
 
     assert_helper ((bool) stopped_context, "Unable to locate stopped context.", true);
-    dr_mutex_unlock (*mutex);
 
     return stopped_context->first;
   }

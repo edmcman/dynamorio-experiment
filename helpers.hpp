@@ -3,6 +3,7 @@
 
 // MUST LOCK
 static void resume_application_threads (void) {
+  assert (suspend_params);
   stopped_context = std::nullopt;
   stopped_block = std::nullopt;
   assert (dr_resume_all_other_threads (suspend_params->first, suspend_params->second));
@@ -11,6 +12,7 @@ static void resume_application_threads (void) {
 
 // MUST LOCK
 static void suspend_application_threads (void) {
+  assert (!suspend_params);
   uint num_unsuspended;
   suspend_params = std::make_pair ((void**) 0, 0U);
   DR_ASSERT (dr_suspend_all_other_threads (&(suspend_params->first), &(suspend_params->second), &num_unsuspended));

@@ -33,6 +33,9 @@ extern "C" {
   void __ctype_init (void);
 }
 
+// Dummy thread to work around DR i#3973
+static void dummy_thread (void* param) {}
+
 static void server_thread (void* param) {
   dr_printf ("Server thread\n");
   dr_client_thread_set_suspendable (false);
@@ -64,18 +67,6 @@ event_basic_block (void *drcontext, void *tag, instrlist_t *bb,
 static void
 event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded);
 
-// void suspender_thread (void *) {
-//   dr_printf ("Suspender thread\n");
-//   dr_client_thread_set_suspendable (false);
-
-//   while (true) {
-//     dr_printf ("Waiting in suspender thread\n");
-//     dr_event_wait (*suspend_event);
-//     dr_printf ("Suspender thread awake!\n");
-//     suspend_application_threads ();
-//   }
-// }
-
 DR_EXPORT void
 dr_client_main(client_id_t id, int argc, const char *argv[])
 {
@@ -93,9 +84,8 @@ dr_client_main(client_id_t id, int argc, const char *argv[])
   mutex = dr_mutex_create ();
   suspend_event = dr_event_create ();
 
-  // dr_printf ("Spawning suspender thread\n");
-  // dr_create_client_thread (suspender_thread, NULL);
-  // dr_printf ("Done spawning suspender thread\n");
+  // Dummy thread to work around DR i#3973
+  dr_create_client_thread (dummy_thread, NULL);
 
   dr_printf ("Spawning server thread.\n");
   dr_create_client_thread (server_thread, NULL);
@@ -130,7 +120,6 @@ static void update_fastforward_count (app_pc addr, app_pc start, app_pc end) {
 
       if (stop_events->count (EventType::Breakpoint)) {
         suspend_helper (std::make_optional (EventType::Breakpoint), start, end);
-        return;
       }
     } else {
       dr_printf ("Count at %d\n", new_count);
@@ -157,21 +146,12 @@ static void relevant_block_clean_call (app_pc start, app_pc end) {
 static void
 event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded)
 {
-  //dr_printf ("WTF! %p\n", modinfo);
-  //DR_ASSERT_MSG (loaded, "loaded should always be true according to DR docs");
+  bool need_flush = false;
 
-  //auto a = modinfo->names.module_name;
-  //auto b = modinfo->names.file_name;
-  //dr_printf ("WT2F! %p\n", a);
-  //dr_printf ("WT2F! %p\n", b);
-  //dr_printf ("%s\n", a);
-  // dr_printf ("%s\n", b);
-  //printf ("what is going on\n");
   const char* name = dr_module_preferred_name (modinfo);
-  //dr_printf ("Hmm %p\n", name);
-  //dr_printf ("WTF3! %p\n", modinfo);
+  dr_printf ("Image loaded %s\n", name);
 
-  //return;
+  std::set<RelAddr> to_delete;
 
   dr_mutex_lock (*mutex);
   // Are there any deferred breakpoints in this module that we can activate?
@@ -183,13 +163,17 @@ event_module_loaded (void *drcontext, const module_data_t *modinfo, bool loaded)
       DR_ASSERT_MSG (addr, "Internal error: expected to resolve address");
       DR_ASSERT_MSG (*addr >= modinfo->start && *addr <= modinfo->end, "Deferred breakpoint offset was invalid");
 
-      //dr_printf("WHAT\n");
-      
       breakpoints [*addr] = p.second;
-      deferred_breakpoints.erase (p.first);
+      to_delete.insert (p.first);
     }
   }
+
+  for (const auto &dbp : to_delete) {
+    deferred_breakpoints.erase (dbp);
+  }
   dr_mutex_unlock (*mutex);
+
+  if (need_flush) total_flush ();
 }
 
 static dr_emit_flags_t
